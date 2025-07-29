@@ -39,8 +39,8 @@ export const leadFormSchema: JsonSchema = {
         'China',
         'Mexico',
         'Brazil',
-        'Other'
-      ]
+        'Other',
+      ],
     },
     o1Visa: {
       type: 'boolean',
@@ -56,14 +56,15 @@ export const leadFormSchema: JsonSchema = {
     },
     dontKnowVisa: {
       type: 'boolean',
-      title: 'I don\'t know',
+      title: "I don't know",
     },
     openInput: {
       type: 'string',
       title: 'How can we help you? (Please provide details)',
-      description: 'Please include your current status, immigration history, long-term and short-term goals, and timeline considerations.',
+      description:
+        'Please include your current status, immigration history, long-term and short-term goals, and timeline considerations.',
       maxLength: 1000,
-      format: 'textarea' 
+      format: 'textarea',
     },
   },
   required: ['firstName', 'lastName', 'email', 'linkedin', 'country'],
@@ -134,6 +135,6 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         multi: true, // for textarea
       },
-    }    
+    },
   ],
-}; 
+};

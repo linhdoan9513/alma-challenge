@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
 import React from 'react';
-import Image from "next/image";
-import styled from "styled-components";
-import Link from "next/link";
-import ClientWrapper from "@/components/ClientWrapper";
+import Image from 'next/image';
+import styled from 'styled-components';
+import Link from 'next/link';
+import ClientWrapper from '@/components/ClientWrapper';
 
 const Container = styled.div`
   font-family: sans-serif;
@@ -35,7 +35,8 @@ const Main = styled.main`
 `;
 
 const Logo = styled(Image)`
-  filter: ${(props: { theme?: { mode?: string } }) => props.theme?.mode === 'dark' ? 'invert(1)' : 'none'};
+  filter: ${(props: { theme?: { mode?: string } }) =>
+    props.theme?.mode === 'dark' ? 'invert(1)' : 'none'};
 `;
 
 const Instructions = styled.ol`
@@ -172,16 +173,15 @@ const Home: React.FC = () => {
       <Container>
         <Main>
           <Logo
-            src="/next.svg"
-            alt="Next.js logo"
+            src='/next.svg'
+            alt='Next.js logo'
             width={180}
             height={38}
             priority
           />
           <Instructions>
             <InstructionItem>
-              Get started by editing{" "}
-              <Code>src/app/page.tsx</Code>.
+              Get started by editing <Code>src/app/page.tsx</Code>.
             </InstructionItem>
             <InstructionItem>
               Save and see your changes instantly.
@@ -189,54 +189,50 @@ const Home: React.FC = () => {
           </Instructions>
 
           <ButtonGroup>
-            <PrimaryButton href="/lead-form">
+            <PrimaryButton href='/lead-form'>
               Lead Application Form
             </PrimaryButton>
-            <SecondaryButton
-              href="/admin"
-            >
-              View Submissions
-            </SecondaryButton>
+            <SecondaryButton href='/admin'>View Submissions</SecondaryButton>
           </ButtonGroup>
         </Main>
         <Footer>
           <FooterLink
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href='https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             <Image
               aria-hidden
-              src="/file.svg"
-              alt="File icon"
+              src='/file.svg'
+              alt='File icon'
               width={16}
               height={16}
             />
             Learn
           </FooterLink>
           <FooterLink
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href='https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             <Image
               aria-hidden
-              src="/window.svg"
-              alt="Window icon"
+              src='/window.svg'
+              alt='Window icon'
               width={16}
               height={16}
             />
             Examples
           </FooterLink>
           <FooterLink
-            href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href='https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             <Image
               aria-hidden
-              src="/globe.svg"
-              alt="Globe icon"
+              src='/globe.svg'
+              alt='Globe icon'
               width={16}
               height={16}
             />

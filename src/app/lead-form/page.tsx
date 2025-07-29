@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -13,4 +13,4 @@ const LeadFormPage: React.FC = () => {
   );
 };
 
-export default LeadFormPage; 
+export default LeadFormPage;

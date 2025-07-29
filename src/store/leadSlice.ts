@@ -54,7 +54,7 @@ const leadSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    resetForm: (state) => {
+    resetForm: state => {
       state.formData = initialState.formData;
       state.isSubmitting = false;
       state.isSubmitted = false;
@@ -63,5 +63,11 @@ const leadSlice = createSlice({
   },
 });
 
-export const { updateFormData, setSubmitting, setSubmitted, setError, resetForm } = leadSlice.actions;
-export default leadSlice.reducer; 
+export const {
+  updateFormData,
+  setSubmitting,
+  setSubmitted,
+  setError,
+  resetForm,
+} = leadSlice.actions;
+export default leadSlice.reducer;

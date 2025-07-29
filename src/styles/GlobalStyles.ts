@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
   /* ---------- CSS Reset + Box Model ---------- */
@@ -116,6 +116,6 @@ const GlobalStyles = createGlobalStyle`
   .MuiInputAdornment-root {
     display: none !important;
   }
-`
+`;
 
-export default GlobalStyles
+export default GlobalStyles;
