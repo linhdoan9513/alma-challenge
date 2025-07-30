@@ -101,6 +101,12 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
     const offset = parseInt(req.query.offset as string) || 0;
     const search = req.query.search as string;
     const status = req.query.status as string;
+    const sortField = req.query.sortField as string || 'createdAt';
+    const sortDirection = req.query.sortDirection as 'asc' | 'desc' || 'desc';
+
+    // Validate sort field
+    const allowedSortFields = ['createdAt', 'firstName', 'lastName', 'email', 'country', 'status'];
+    const validSortField = allowedSortFields.includes(sortField) ? sortField : 'createdAt';
 
     // Build where clause
     const where: any = {};
@@ -118,11 +124,15 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
       where.status = status;
     }
 
-    // Query database with pagination
+    // Build orderBy clause
+    const orderBy: any = {};
+    orderBy[validSortField] = sortDirection;
+
+    // Query database with pagination, sorting, and filtering
     const [leads, total] = await Promise.all([
       prisma.lead.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         skip: offset,
         take: limit,
       }),
@@ -130,7 +140,7 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
     ]);
 
     // Transform data to match expected format
-    const submissions = leads.map(lead => ({
+    const submissions = leads.map((lead: any) => ({
       id: lead.id,
       timestamp: lead.createdAt.toISOString(),
       data: {
@@ -153,6 +163,10 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
       total,
       limit,
       offset,
+      sortField: validSortField,
+      sortDirection,
+      search,
+      status: status || 'all',
     });
   } catch (error) {
     console.error('Error fetching leads:', error);

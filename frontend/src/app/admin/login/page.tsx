@@ -1,5 +1,6 @@
 'use client';
 
+import { login } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -87,28 +88,15 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Login failed');
-        return;
-      }
+      const data = await login(credentials.email, credentials.password);
 
       // Store the token
       localStorage.setItem('authToken', data.token);
 
       // Redirect to admin dashboard
       router.push('/admin');
-    } catch {
-      setError('Network error. Please try again.');
+    } catch (error: any) {
+      setError(error.message || 'Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }

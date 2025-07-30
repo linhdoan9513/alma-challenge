@@ -534,7 +534,6 @@ const LeadForm: React.FC = () => {
 
       try {
         const response = await submitLeadForm(formData);
-        console.log("Form submitted successfully:", response);
         dispatch(setSubmitted(true));
       } catch (err) {
         if (err instanceof ApiError) {
@@ -550,95 +549,95 @@ const LeadForm: React.FC = () => {
     [dispatch, formData]
   );
 
-  if (isSubmitted) {
-    return (
-      <Page>
-        <Header>
-          <HeaderContent>
-            <Brand>alma</Brand>
-            <Heading>
-              Get An Assessment
-              <br />
-              Of Your
-              <br />
-              Immigration Case
-            </Heading>
-          </HeaderContent>
-        </Header>
-        <Section>
-          <Container>
-            <Success>
-              <DocumentIcon>
-                <DescriptionIcon />
-              </DocumentIcon>
-              <ThankYouTitle>Thank You</ThankYouTitle>
-              <ThankYouMessage>
-                Your information was submitted to our team of immigration
-                attorneys. Expect an email from{" "}
-                <strong>hello@tryalma.ai</strong>.
-              </ThankYouMessage>
-              <HomeButton href="/">Go Back to Homepage</HomeButton>
-            </Success>
-          </Container>
-        </Section>
-      </Page>
-    );
-  }
-
   return (
-    <Page>
-      <Header>
-        <HeaderContent>
-          <Brand>alma</Brand>
-          <Heading>
-            Get An Assessment
-            <br />
-            Of Your
-            <br />
-            Immigration Case
-          </Heading>
-        </HeaderContent>
-      </Header>
+    <ClientOnly>
+      {isSubmitted ? (
+        <Page>
+          <Header>
+            <HeaderContent>
+              <Brand>alma</Brand>
+              <Heading>
+                Get An Assessment
+                <br />
+                Of Your
+                <br />
+                Immigration Case
+              </Heading>
+            </HeaderContent>
+          </Header>
+          <Section>
+            <Container>
+              <Success>
+                <DocumentIcon>
+                  <DescriptionIcon />
+                </DocumentIcon>
+                <ThankYouTitle>Thank You</ThankYouTitle>
+                <ThankYouMessage>
+                  Your information was submitted to our team of immigration
+                  attorneys. Expect an email from{" "}
+                  <strong>hello@tryalma.ai</strong>.
+                </ThankYouMessage>
+                <HomeButton href="/">Go Back to Homepage</HomeButton>
+              </Success>
+            </Container>
+          </Section>
+        </Page>
+      ) : (
+        <Page>
+          <Header>
+            <HeaderContent>
+              <Brand>alma</Brand>
+              <Heading>
+                Get An Assessment
+                <br />
+                Of Your
+                <br />
+                Immigration Case
+              </Heading>
+            </HeaderContent>
+          </Header>
 
-      <Section>
-        <Container>
-          {error && <Error>{error}</Error>}
+          <Section>
+            <Container>
+              {error && <Error>{error}</Error>}
 
-          <form onSubmit={handleSubmit}>
-            <FormHeader>
-              <Icon>📄</Icon>
-              <Title>Want to understand your visa options?</Title>
-            </FormHeader>
+              <form onSubmit={handleSubmit}>
+                <FormHeader>
+                  <Icon>📄</Icon>
+                  <Title>Want to understand your visa options?</Title>
+                </FormHeader>
 
-            <Description>
-              Submit the form below and our team of experienced attorneys will
-              review your case and send a preliminary assessment based on your
-              goals.
-            </Description>
+                <Description>
+                  Submit the form below and our team of experienced attorneys
+                  will review your case and send a preliminary assessment based
+                  on your goals.
+                </Description>
 
-            <StyledJsonForms>
-              <ClientOnly>
-                <JsonForms
-                  schema={leadFormSchema}
-                  uischema={leadFormUISchema}
-                  data={formData}
-                  renderers={
-                    materialRenderers as JsonFormsRendererRegistryEntry[]
-                  }
-                  cells={materialCells as JsonFormsCellRendererRegistryEntry[]}
-                  onChange={handleFormChange}
-                  validationMode="ValidateAndHide"
-                />
-              </ClientOnly>
-            </StyledJsonForms>
+                <StyledJsonForms>
+                  <JsonForms
+                    schema={leadFormSchema}
+                    uischema={leadFormUISchema}
+                    data={formData}
+                    renderers={
+                      materialRenderers as JsonFormsRendererRegistryEntry[]
+                    }
+                    cells={
+                      materialCells as JsonFormsCellRendererRegistryEntry[]
+                    }
+                    onChange={handleFormChange}
+                    validationMode="ValidateAndHide"
+                  />
+                </StyledJsonForms>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </Button>
-          </form>
-        </Container>
-      </Section>
-    </Page>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit"}
+                </Button>
+              </form>
+            </Container>
+          </Section>
+        </Page>
+      )}
+    </ClientOnly>
   );
 };
 

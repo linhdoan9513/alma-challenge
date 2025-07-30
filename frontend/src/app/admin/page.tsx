@@ -1,10 +1,11 @@
 'use client';
 
 import {
-  KeyboardArrowDown,
+  ArrowDownward,
+  ArrowUpward,
   KeyboardArrowLeft,
   KeyboardArrowRight,
-  Search,
+  Search
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -206,6 +207,7 @@ const TableContainer = styled.div`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 `;
 
 const TableHeader = styled.thead`
@@ -220,17 +222,35 @@ const TableHeaderCell = styled.th`
   border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
   user-select: none;
+  white-space: nowrap;
 
   &:hover {
     background: #f0f0f0;
   }
 `;
 
-const SortIcon = styled(KeyboardArrowDown)`
+const SortIcon = styled.span`
+  display: inline-block;
   margin-left: 0.5rem;
-  font-size: 1rem;
-  color: #999;
+  font-size: 0.75rem;
+  color: inherit;
+  vertical-align: middle;
 `;
+
+// Dynamic sort icon component
+const SortIconComponent: React.FC<{
+  field: keyof Lead;
+  currentSortField: keyof Lead;
+  currentSortDirection: 'asc' | 'desc';
+}> = ({ field, currentSortField, currentSortDirection }) => {
+  const isActive = field === currentSortField;
+
+  if (!isActive) {
+    return <ArrowDownward />;
+  }
+
+  return currentSortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />;
+};
 
 const TableBody = styled.tbody``;
 
@@ -249,6 +269,8 @@ const TableRow = styled.tr`
 const TableCell = styled.td`
   padding: 1rem;
   color: #333;
+  text-align: left;
+  vertical-align: middle;
 `;
 
 const StatusSelect = styled.select`
@@ -334,8 +356,10 @@ const AdminPage: React.FC = () => {
   // State
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<keyof Lead>('submitted');
@@ -347,8 +371,25 @@ const AdminPage: React.FC = () => {
 
     try {
       setLoading(true);
+
+      // Build query parameters for backend sorting and filtering
+      const params = new URLSearchParams({
+        limit: '10',
+        offset: ((currentPage - 1) * 10).toString(),
+        sortField: sortField === 'submitted' ? 'createdAt' : sortField,
+        sortDirection: sortDirection,
+      });
+
+      if (debouncedSearchTerm) {
+        params.append('search', debouncedSearchTerm);
+      }
+
+      if (statusFilter !== 'all') {
+        params.append('status', statusFilter);
+      }
+
       const response = await fetch(
-        `http://localhost:5000/api/leads?limit=10&offset=${(currentPage - 1) * 10}`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/leads?${params.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -395,6 +436,7 @@ const AdminPage: React.FC = () => {
       }));
 
       setLeads(transformedLeads);
+      setTotalLeads(data.total);
     } catch (err: unknown) {
       const errorMessage =
         err && typeof err === 'object' && 'message' in err
@@ -404,7 +446,7 @@ const AdminPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, token, router]);
+  }, [currentPage, token, router, sortField, sortDirection, debouncedSearchTerm, statusFilter]);
 
   // Effects
   useEffect(() => {
@@ -421,15 +463,44 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  // Debounced search effect
+  useEffect(() => {
+    setSearching(true);
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      setSearching(false);
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => {
+      clearTimeout(timeoutId);
+      setSearching(false);
+    };
+  }, [searchTerm]);
+
+
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
   const handleStatusUpdate = async (
     leadId: string,
     newStatus: 'PENDING' | 'REACHED_OUT'
   ) => {
     if (!token) return;
 
+    console.log('Updating status for lead:', leadId, 'to:', newStatus);
+    console.log('Using token:', token.substring(0, 20) + '...');
+
     try {
       const response = await fetch(
-        `http://localhost:5000/api/leads/${leadId}/status`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/leads/${leadId}/status`,
         {
           method: 'PATCH',
           headers: {
@@ -441,6 +512,9 @@ const AdminPage: React.FC = () => {
       );
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Status update failed:', response.status, response.statusText);
+        console.error('Error response:', errorText);
         setError('Failed to update status');
         return;
       }
@@ -462,29 +536,11 @@ const AdminPage: React.FC = () => {
     router.push('/admin/login');
   };
 
+  // State for total count from backend
+  const [totalLeads, setTotalLeads] = useState(0);
+
   // Computed Values
-  const filteredAndSortedLeads = leads
-    .filter(lead => {
-      const matchesSearch =
-        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.country.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus =
-        statusFilter === 'all' || lead.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    })
-    .sort((a, b) => {
-      const aValue = a[sortField] ?? '';
-      const bValue = b[sortField] ?? '';
-
-      if (sortDirection === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
-
-  const totalPages = Math.ceil(filteredAndSortedLeads.length / 10);
+  const totalPages = Math.ceil(totalLeads / 10);
 
   // Loading State
   if (loading) {
@@ -545,18 +601,22 @@ const AdminPage: React.FC = () => {
 
           <SearchFilterBar>
             <SearchContainer>
-              <SearchIcon />
+              <SearchIcon style={{ color: searching ? '#007bff' : '#999' }} />
               <SearchInput
                 type='text'
-                placeholder='Search'
+                placeholder={searching ? 'Searching...' : 'Search'}
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={e => handleSearchChange(e.target.value)}
+                style={{
+                  borderColor: searching ? '#007bff' : undefined,
+                  backgroundColor: searching ? '#f8f9fa' : undefined,
+                }}
               />
             </SearchContainer>
 
             <StatusFilter
               value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
+              onChange={e => handleStatusFilterChange(e.target.value)}
             >
               <option value='all'>Status</option>
               <option value='PENDING'>Pending</option>
@@ -569,28 +629,58 @@ const AdminPage: React.FC = () => {
 
         <TableContainer>
           <Table>
+            <colgroup>
+              <col style={{ width: '25%' }} />
+              <col style={{ width: '25%' }} />
+              <col style={{ width: '25%' }} />
+              <col style={{ width: '25%' }} />
+            </colgroup>
             <TableHeader>
               <tr>
                 <TableHeaderCell onClick={() => handleSort('name')}>
-                  Name
-                  <SortIcon />
+                  <span>Name</span>
+                  <SortIcon>
+                    <SortIconComponent
+                      field="name"
+                      currentSortField={sortField}
+                      currentSortDirection={sortDirection}
+                    />
+                  </SortIcon>
                 </TableHeaderCell>
                 <TableHeaderCell onClick={() => handleSort('submitted')}>
-                  Submitted
-                  <SortIcon />
+                  <span>Submitted</span>
+                  <SortIcon>
+                    <SortIconComponent
+                      field="submitted"
+                      currentSortField={sortField}
+                      currentSortDirection={sortDirection}
+                    />
+                  </SortIcon>
                 </TableHeaderCell>
                 <TableHeaderCell onClick={() => handleSort('status')}>
-                  Status
-                  <SortIcon />
+                  <span>Status</span>
+                  <SortIcon>
+                    <SortIconComponent
+                      field="status"
+                      currentSortField={sortField}
+                      currentSortDirection={sortDirection}
+                    />
+                  </SortIcon>
                 </TableHeaderCell>
                 <TableHeaderCell onClick={() => handleSort('country')}>
-                  Country
-                  <SortIcon />
+                  <span>Country</span>
+                  <SortIcon>
+                    <SortIconComponent
+                      field="country"
+                      currentSortField={sortField}
+                      currentSortDirection={sortDirection}
+                    />
+                  </SortIcon>
                 </TableHeaderCell>
               </tr>
             </TableHeader>
             <TableBody>
-              {filteredAndSortedLeads.slice(0, 10).map(lead => (
+              {leads.map(lead => (
                 <TableRow key={lead.id}>
                   <TableCell>{lead.name}</TableCell>
                   <TableCell>{lead.submitted}</TableCell>
