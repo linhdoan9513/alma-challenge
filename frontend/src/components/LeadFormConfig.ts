@@ -28,19 +28,6 @@ export const leadFormSchema: JsonSchema = {
     country: {
       type: "string",
       title: "Country of Citizenship",
-      enum: [
-        "United States",
-        "Canada",
-        "United Kingdom",
-        "Australia",
-        "Germany",
-        "France",
-        "India",
-        "China",
-        "Mexico",
-        "Brazil",
-        "Other",
-      ],
     },
     o1Visa: {
       type: "boolean",
@@ -97,25 +84,8 @@ export const personalInfoSchema: JsonSchema = {
       format: "uri",
       minLength: 1,
     },
-    country: {
-      type: "string",
-      title: "Country of Citizenship",
-      enum: [
-        "United States",
-        "Canada",
-        "United Kingdom",
-        "Australia",
-        "Germany",
-        "France",
-        "India",
-        "China",
-        "Mexico",
-        "Brazil",
-        "Other",
-      ],
-    },
   },
-  required: ["firstName", "lastName", "email", "linkedin", "country"],
+  required: ["firstName", "lastName", "email", "linkedin"],
 };
 
 // Separate schema for Visa Categories
@@ -190,15 +160,6 @@ export const leadFormUISchema1: UISchemaElement = {
     {
       type: "Control",
       scope: "#/properties/linkedin",
-      options: {
-        trim: true,
-        showUnfocusedDescription: false,
-        showErrors: false,
-      },
-    },
-    {
-      type: "Control",
-      scope: "#/properties/country",
       options: {
         trim: true,
         showUnfocusedDescription: false,

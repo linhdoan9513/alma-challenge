@@ -25,15 +25,15 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import CountrySelect from "./CountrySelect";
 import CustomResumeUpload from "./CustomResumeUpload";
 import {
   leadFormUISchema1,
-  leadFormUISchema2,
   leadFormUISchema3,
   personalInfoSchema,
   textareaSchema,
-  visaSchema,
 } from "./LeadFormConfig";
+import VisaCheckboxes from "./VisaCheckboxes";
 
 // Client-only wrapper to prevent hydration mismatches
 const ClientOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -100,7 +100,6 @@ const Brand = styled.div`
   font-size: 1.25rem;
   font-weight: 600;
   color: black;
-  text-transform: lowercase;
   margin-bottom: 0.5rem;
 
   @media (min-width: 768px) {
@@ -280,7 +279,6 @@ const StyledJsonForms = styled.div`
   }
 
   .MuiOutlinedInput-root {
-    // border: 1px solid #e0e0e0;
     width: 100%;
     transition: border-color 0.2s ease;
 
@@ -448,7 +446,6 @@ const Button = styled.button`
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
@@ -508,12 +505,12 @@ const DocumentIcon = styled.div`
 const ThankYouTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: black;
   margin: 0;
 `;
 
 const ThankYouMessage = styled.p`
-  color: var(--primary-color);
+  color: black;
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
@@ -522,7 +519,7 @@ const ThankYouMessage = styled.p`
 `;
 
 const HomeButton = styled(Link)`
-  background: var(--primary-color);
+  background: black;
   color: white;
   padding: 1rem 2rem;
   border-radius: 8px;
@@ -616,7 +613,7 @@ const LeadForm: React.FC = () => {
         const formDataToSend = new FormData();
 
         // Add all form fields
-        Object.keys(formData).forEach((key) => {
+        Object.keys(formData).forEach(key => {
           formDataToSend.append(
             key,
             String(formData[key as keyof LeadFormData])
@@ -732,25 +729,44 @@ const LeadForm: React.FC = () => {
                     validationMode="ValidateAndHide"
                   />
                 </StyledJsonForms>
+                <div
+                  style={{
+                    marginBottom: "1.5rem",
+                    width: "100%",
+                    maxWidth: "500px",
+                    margin: "0 auto 1.5rem auto",
+                  }}
+                >
+                  <CountrySelect
+                    value={formData.country}
+                    onChange={value => {
+                      dispatch(updateFormData({ country: value }));
+                    }}
+                    label="Country of Citizenship"
+                    required={true}
+                    error={false}
+                    disabled={false}
+                  />
+                </div>
                 <FormHeader>
                   <Icon>🎯</Icon>
                   <Title>Visa categories of interest?</Title>
                 </FormHeader>
-                <StyledJsonForms>
-                  <JsonForms
-                    schema={visaSchema}
-                    uischema={leadFormUISchema2}
-                    data={formData}
-                    renderers={
-                      materialRenderers as JsonFormsRendererRegistryEntry[]
-                    }
-                    cells={
-                      materialCells as JsonFormsCellRendererRegistryEntry[]
-                    }
-                    onChange={handleChange}
-                    validationMode="ValidateAndHide"
+                <div
+                  style={{
+                    marginBottom: "1.5rem",
+                    width: "100%",
+                    maxWidth: "500px",
+                    margin: "0 auto 1.5rem auto",
+                  }}
+                >
+                  <VisaCheckboxes
+                    formData={formData}
+                    onUpdate={updates => {
+                      dispatch(updateFormData(updates));
+                    }}
                   />
-                </StyledJsonForms>
+                </div>
                 <FormHeader>
                   <Icon>💬</Icon>
                   <Title>How can we help you ?</Title>

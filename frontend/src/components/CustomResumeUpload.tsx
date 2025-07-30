@@ -81,7 +81,7 @@ const CustomResumeUpload: React.FC<CustomResumeUploadProps> = ({
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         const result = e.target?.result as string;
         onChange(result, file);
       };

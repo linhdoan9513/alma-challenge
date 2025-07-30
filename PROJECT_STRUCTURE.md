@@ -63,8 +63,7 @@ frontend/
 │   ├── components/
 │   │   ├── LeadForm.tsx        # Lead form component
 │   │   ├── LeadFormConfig.ts   # Form configuration
-│   │   ├── ClientWrapper.tsx   # Client-side wrapper
-│   │   └── ThemeProvider.tsx   # Theme provider
+│   │   └── ClientWrapper.tsx   # Client-side wrapper
 │   ├── lib/
 │   │   └── api.ts              # API client functions
 │   ├── store/

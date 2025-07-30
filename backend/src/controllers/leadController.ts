@@ -36,7 +36,6 @@ function isRateLimited(email: string): boolean {
 export const submitLead = async (req: Request, res: Response): Promise<void> => {
   try {
     const body = req.body;
-    console.log('Received form data:', body);
 
     // Check rate limiting based on email
     if (isRateLimited(body.email)) {

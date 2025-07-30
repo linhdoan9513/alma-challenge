@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit';
-import leadReducer from './leadSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import leadReducer from "./leadSlice";
 
 export const store = configureStore({
   reducer: {

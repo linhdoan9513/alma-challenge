@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 interface FileUploadRendererProps extends ControlProps {
   data: string;
-  handleChange: (path: string, value: any) => void;
+  handleChange: (path: string, value: string) => void;
 }
 
 const UploadButton = styled.button`
@@ -78,7 +78,6 @@ const RequiredIndicator = styled.span`
 `;
 
 const FileUploadRenderer: React.FC<FileUploadRendererProps> = ({
-  data,
   handleChange,
   path,
   label,
@@ -94,7 +93,7 @@ const FileUploadRenderer: React.FC<FileUploadRendererProps> = ({
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         const result = e.target?.result as string;
         handleChange(path, result);
       };

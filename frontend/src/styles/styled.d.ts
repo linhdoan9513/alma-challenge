@@ -1,7 +1,7 @@
-import 'styled-components';
+import "styled-components";
 
-declare module 'styled-components' {
+declare module "styled-components" {
   export interface DefaultTheme {
-    mode?: 'light' | 'dark';
+    mode?: "light" | "dark";
   }
 }

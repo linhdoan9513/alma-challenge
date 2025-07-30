@@ -75,7 +75,7 @@ const leadSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    resetForm: (state) => {
+    resetForm: state => {
       state.formData = initialState.formData;
       state.isSubmitting = false;
       state.isSubmitted = false;

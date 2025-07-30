@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { login } from '@/lib/api';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import styled from 'styled-components';
+import { login } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import styled from "styled-components";
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -77,26 +77,26 @@ const ErrorMessage = styled.div`
 `;
 
 export default function LoginPage() {
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const data = await login(credentials.email, credentials.password);
 
       // Store the token
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem("authToken", data.token);
 
       // Redirect to admin dashboard
-      router.push('/admin');
+      router.push("/admin");
     } catch (error: any) {
-      setError(error.message || 'Network error. Please try again.');
+      setError(error.message || "Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +108,8 @@ export default function LoginPage() {
         <LoginTitle>Admin Login</LoginTitle>
         <Form onSubmit={handleSubmit}>
           <Input
-            type='email'
-            placeholder='Email'
+            type="email"
+            placeholder="Email"
             value={credentials.email}
             onChange={e =>
               setCredentials({ ...credentials, email: e.target.value })
@@ -117,16 +117,16 @@ export default function LoginPage() {
             required
           />
           <Input
-            type='password'
-            placeholder='Password'
+            type="password"
+            placeholder="Password"
             value={credentials.password}
             onChange={e =>
               setCredentials({ ...credentials, password: e.target.value })
             }
             required
           />
-          <Button type='submit' disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </Form>
         {error && <ErrorMessage>{error}</ErrorMessage>}

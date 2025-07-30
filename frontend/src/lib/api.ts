@@ -1,7 +1,7 @@
-import { LeadFormData } from '@/store/leadSlice';
+import { LeadFormData } from "@/store/leadSlice";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export interface ApiResponse {
   success: boolean;
@@ -28,7 +28,7 @@ export class ApiError extends Error {
     public response?: unknown
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -39,9 +39,9 @@ export async function login(
 ): Promise<AuthResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
@@ -50,7 +50,7 @@ export async function login(
 
     if (!response.ok) {
       throw new ApiError(
-        data.error || 'Failed to login',
+        data.error || "Failed to login",
         response.status,
         data
       );
@@ -63,7 +63,7 @@ export async function login(
     }
 
     throw new ApiError(
-      'Network error. Please check your connection and try again.',
+      "Network error. Please check your connection and try again.",
       0,
       error
     );
@@ -75,7 +75,7 @@ export async function getProfile(token: string) {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -83,7 +83,7 @@ export async function getProfile(token: string) {
 
     if (!response.ok) {
       throw new ApiError(
-        data.error || 'Failed to get profile',
+        data.error || "Failed to get profile",
         response.status,
         data
       );
@@ -96,7 +96,7 @@ export async function getProfile(token: string) {
     }
 
     throw new ApiError(
-      'Network error. Please check your connection and try again.',
+      "Network error. Please check your connection and try again.",
       0,
       error
     );
@@ -111,10 +111,12 @@ export async function submitLeadForm(
     const isFormData = formData instanceof FormData;
 
     const response = await fetch(`${API_BASE_URL}/leads/submit`, {
-      method: 'POST',
-      headers: isFormData ? {} : {
-        'Content-Type': 'application/json',
-      },
+      method: "POST",
+      headers: isFormData
+        ? {}
+        : {
+            "Content-Type": "application/json",
+          },
       body: isFormData ? formData : JSON.stringify(formData),
     });
 
@@ -122,7 +124,7 @@ export async function submitLeadForm(
 
     if (!response.ok) {
       throw new ApiError(
-        data.error || 'Failed to submit form',
+        data.error || "Failed to submit form",
         response.status,
         data
       );
@@ -135,7 +137,7 @@ export async function submitLeadForm(
     }
 
     throw new ApiError(
-      'Network error. Please check your connection and try again.',
+      "Network error. Please check your connection and try again.",
       0,
       error
     );
@@ -153,15 +155,15 @@ export async function getLeads(
 ) {
   try {
     const searchParams = new URLSearchParams();
-    if (params?.limit) searchParams.append('limit', params.limit.toString());
-    if (params?.offset) searchParams.append('offset', params.offset.toString());
-    if (params?.search) searchParams.append('search', params.search);
-    if (params?.status) searchParams.append('status', params.status);
+    if (params?.limit) searchParams.append("limit", params.limit.toString());
+    if (params?.offset) searchParams.append("offset", params.offset.toString());
+    if (params?.search) searchParams.append("search", params.search);
+    if (params?.status) searchParams.append("status", params.status);
 
     const response = await fetch(`${API_BASE_URL}/leads?${searchParams}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -169,7 +171,7 @@ export async function getLeads(
 
     if (!response.ok) {
       throw new ApiError(
-        data.error || 'Failed to fetch leads',
+        data.error || "Failed to fetch leads",
         response.status,
         data
       );
@@ -182,7 +184,7 @@ export async function getLeads(
     }
 
     throw new ApiError(
-      'Network error. Please check your connection and try again.',
+      "Network error. Please check your connection and try again.",
       0,
       error
     );
@@ -192,14 +194,14 @@ export async function getLeads(
 export async function updateLeadStatus(
   token: string,
   leadId: string,
-  status: 'PENDING' | 'REACHED_OUT'
+  status: "PENDING" | "REACHED_OUT"
 ) {
   try {
     const response = await fetch(`${API_BASE_URL}/leads/${leadId}/status`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ status }),
     });
@@ -208,7 +210,7 @@ export async function updateLeadStatus(
 
     if (!response.ok) {
       throw new ApiError(
-        data.error || 'Failed to update lead status',
+        data.error || "Failed to update lead status",
         response.status,
         data
       );
@@ -221,7 +223,7 @@ export async function updateLeadStatus(
     }
 
     throw new ApiError(
-      'Network error. Please check your connection and try again.',
+      "Network error. Please check your connection and try again.",
       0,
       error
     );
