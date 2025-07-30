@@ -255,9 +255,15 @@ npm start
    - Verify frontend is running on correct port
 
 4. **Prisma Errors**
+
    - Run `npm run db:generate`
    - Check database schema
    - Restart development server
+
+5. **Resume Upload Issues**
+   - Create uploads folder: `mkdir -p backend/uploads`
+   - Ensure folder has write permissions: `chmod 755 backend/uploads`
+   - Resume files will be stored as: `backend/uploads/resume.pdf`
 
 ### Database Commands
 
