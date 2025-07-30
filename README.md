@@ -1,36 +1,279 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Alma - Full-Stack Lead Management System
 
-## Getting Started
+A modern full-stack application for managing visa application leads with separate backend and frontend architecture.
 
-First, run the development server:
+## 🏗️ Architecture
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+alma/
+├── backend/          # Express.js + Prisma + PostgreSQL API
+├── frontend/         # Next.js + React + TypeScript UI
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Quick Start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+
+- PostgreSQL database
+- npm or yarn
 
-## Learn More
+### 1. Install Dependencies
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Install root dependencies
+npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install backend dependencies
+cd backend && npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Install frontend dependencies
+cd ../frontend && npm install
+```
 
-## Deploy on Vercel
+### 2. Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Set up PostgreSQL database**
+   - Create a new database: `CREATE DATABASE alma_db;`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Configure environment variables**
+   ```bash
+   # Backend (.env file in backend/ directory)
+   DATABASE_URL="postgresql://username:password@localhost:5432/alma_db"
+   JWT_SECRET="your-super-secret-key-change-this-in-production"
+   PORT=5000
+   NODE_ENV=development
+   FRONTEND_URL="http://localhost:3000"
+   ```
+
+3. **Initialize database**
+   ```bash
+   # Generate Prisma client
+   npm run db:generate
+
+   # Push schema to database
+   npm run db:push
+
+   # Create admin user
+   npm run db:setup
+   ```
+
+### 3. Start Development Servers
+
+```bash
+# Start both backend and frontend
+npm run dev
+
+# Or start them separately:
+npm run dev:backend  # Backend on http://localhost:5000
+npm run dev:frontend # Frontend on http://localhost:3000
+```
+
+## 📁 Project Structure
+
+### Backend (`/backend`)
+
+```
+backend/
+├── src/
+│   ├── config/          # Database and auth configuration
+│   ├── controllers/     # API route handlers
+│   ├── middleware/      # Authentication and validation
+│   ├── routes/          # API route definitions
+│   └── index.ts         # Express server entry point
+├── prisma/
+│   └── schema.prisma    # Database schema
+├── scripts/
+│   └── setup-db.ts      # Database setup script
+└── package.json
+```
+
+**Key Features:**
+- Express.js REST API
+- Prisma ORM with PostgreSQL
+- JWT authentication
+- Input validation and sanitization
+- Rate limiting
+- CORS configuration
+
+### Frontend (`/frontend`)
+
+```
+frontend/
+├── src/
+│   ├── app/             # Next.js app router pages
+│   │   ├── admin/       # Admin dashboard
+│   │   ├── lead-form/   # Public lead submission form
+│   │   └── api/         # API routes (if needed)
+│   ├── components/      # Reusable React components
+│   ├── lib/             # Utilities and API client
+│   ├── store/           # Redux store
+│   └── styles/          # Global styles
+└── package.json
+```
+
+**Key Features:**
+- Next.js 15 with App Router
+- React 19 with TypeScript
+- Styled Components for styling
+- Redux Toolkit for state management
+- Material-UI components
+- JWT-based authentication
+
+## 🔐 Authentication
+
+### Default Admin Credentials
+- **Email**: `admin@alma.com`
+- **Password**: `admin123`
+
+**⚠️ Important**: Change these credentials in production!
+
+### Authentication Flow
+1. Admin logs in via `/admin/login`
+2. JWT token is stored in localStorage
+3. Token is sent with API requests
+4. Backend validates token and authorizes requests
+
+## 📊 API Endpoints
+
+### Public Endpoints
+- `POST /api/leads/submit` - Submit new lead
+
+### Protected Endpoints (Admin Only)
+- `POST /api/auth/login` - Admin login
+- `GET /api/auth/profile` - Get user profile
+- `GET /api/leads` - Get all leads (with pagination)
+- `PATCH /api/leads/:id/status` - Update lead status
+
+## 🎯 Features
+
+### Lead Management
+- ✅ Public lead submission form
+- ✅ Admin dashboard with lead list
+- ✅ Lead status management (PENDING → REACHED_OUT)
+- ✅ Search and filtering
+- ✅ Pagination
+- ✅ Sorting by multiple fields
+
+### Security
+- ✅ JWT authentication
+- ✅ Password hashing with bcrypt
+- ✅ Input validation and sanitization
+- ✅ Rate limiting
+- ✅ CORS protection
+- ✅ Protected routes
+
+### Database
+- ✅ PostgreSQL with Prisma ORM
+- ✅ User and Lead models
+- ✅ Proper relationships and constraints
+- ✅ Database migrations
+
+## 🛠️ Development
+
+### Backend Development
+```bash
+cd backend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run db:studio    # Open Prisma Studio
+```
+
+### Frontend Development
+```bash
+cd frontend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run lint         # Run ESLint
+```
+
+### Database Management
+```bash
+# From root directory
+npm run db:generate  # Generate Prisma client
+npm run db:push      # Push schema changes
+npm run db:setup     # Create admin user
+```
+
+## 🚀 Production Deployment
+
+### Environment Variables
+
+**Backend (.env)**
+```env
+DATABASE_URL="postgresql://username:password@your-db-host:5432/alma_db"
+JWT_SECRET="your-production-secret-key"
+PORT=5000
+NODE_ENV=production
+FRONTEND_URL="https://your-domain.com"
+```
+
+**Frontend (.env.local)**
+```env
+NEXT_PUBLIC_API_URL="https://your-api-domain.com/api"
+```
+
+### Build and Deploy
+```bash
+# Build both applications
+npm run build
+
+# Start production servers
+npm start
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Error**
+   - Verify DATABASE_URL is correct
+   - Check if PostgreSQL is running
+   - Ensure database exists
+
+2. **Authentication Issues**
+   - Check JWT_SECRET is set
+   - Verify admin user was created
+   - Clear localStorage and re-login
+
+3. **CORS Errors**
+   - Check FRONTEND_URL in backend .env
+   - Verify frontend is running on correct port
+
+4. **Prisma Errors**
+   - Run `npm run db:generate`
+   - Check database schema
+   - Restart development server
+
+### Database Commands
+```bash
+# Reset database (⚠️ WARNING: Deletes all data)
+cd backend && npx prisma migrate reset
+
+# View database in browser
+cd backend && npx prisma studio
+
+# Generate new migration
+cd backend && npx prisma migrate dev --name your_migration_name
+```
+
+## 📝 License
+
+This project is licensed under the ISC License.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📞 Support
+
+For support and questions:
+1. Check the troubleshooting section
+2. Review the API documentation
+3. Check the console for error messages
+4. Verify all environment variables are set correctly
