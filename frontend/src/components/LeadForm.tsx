@@ -201,6 +201,67 @@ const StyledJsonForms = styled.div`
     width: 100%;
   }
 
+  /* Remove clear button (x) from input fields */
+  .MuiInputAdornment-root .MuiIconButton-root {
+    display: none !important;
+  }
+
+  /* Hide any clear/close icons in input fields */
+  .MuiInputBase-input::-webkit-search-cancel-button,
+  .MuiInputBase-input::-webkit-search-decoration,
+  .MuiInputBase-input::-webkit-search-results-button,
+  .MuiInputBase-input::-webkit-search-results-decoration {
+    display: none !important;
+  }
+
+  /* Remove any clear buttons from JsonForms inputs */
+  .MuiTextField-root .MuiInputAdornment-root .MuiIconButton-root,
+  .MuiFormControl-root .MuiInputAdornment-root .MuiIconButton-root {
+    display: none !important;
+  }
+
+  /* Hide clear icons in select dropdowns */
+  .MuiSelect-icon {
+    display: none !important;
+  }
+
+  /* Remove any close/clear buttons from form controls */
+  button[aria-label*="clear"],
+  button[aria-label*="Clear"],
+  button[aria-label*="close"],
+  button[aria-label*="Close"] {
+    display: none !important;
+  }
+
+  /* Hide labels when input has content */
+  .MuiInputBase-root:has(input:not(:placeholder-shown)) .MuiInputLabel-root,
+  .MuiInputBase-root:has(textarea:not(:placeholder-shown)) .MuiInputLabel-root {
+    display: none !important;
+  }
+
+  /* Alternative approach for browsers that don't support :has() */
+  .MuiInputBase-root.Mui-focused .MuiInputLabel-root,
+  .MuiInputBase-root.Mui-focused .MuiInputLabel-root.MuiInputLabel-shrink {
+    display: none !important;
+  }
+
+  /* Dynamic label visibility - show when empty, hide when filled */
+  .MuiInputLabel-root {
+    transition: opacity 0.2s ease;
+  }
+
+  /* Hide labels for filled fields using data attributes */
+  .MuiInputBase-root[data-has-value="true"] .MuiInputLabel-root {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Hide checkbox labels when checked */
+  .MuiCheckbox-root.Mui-checked ~ .MuiFormControlLabel-label {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
   .MuiOutlinedInput-root {
     border: 1px solid #e0e0e0;
     width: 100%;
@@ -655,15 +716,15 @@ const LeadForm: React.FC = () => {
                     onChange={handleFormChange}
                     validationMode="ValidateAndHide"
                   />
-                </StyledJsonForms>
 
-                <CustomResumeUpload
-                  value={formData.resume}
-                  onChange={(value: string, file?: File) => {
-                    dispatch(updateFormData({ resume: value }));
-                    setResumeFile(file || null);
-                  }}
-                />
+                  <CustomResumeUpload
+                    value={formData.resume}
+                    onChange={(value: string, file?: File) => {
+                      dispatch(updateFormData({ resume: value }));
+                      setResumeFile(file || null);
+                    }}
+                  />
+                </StyledJsonForms>
 
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Submitting..." : "Submit"}
