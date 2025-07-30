@@ -51,6 +51,32 @@ const FileInfo = styled.div`
   text-align: center;
 `;
 
+const Container = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+`;
+
+const Description = styled.p`
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+`;
+
+const RequiredIndicator = styled.span`
+  color: red;
+`;
+
 const FileUploadRenderer: React.FC<FileUploadRendererProps> = ({
   data,
   handleChange,
@@ -81,24 +107,12 @@ const FileUploadRenderer: React.FC<FileUploadRendererProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: "1rem" }}>
-      <label
-        style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
-      >
+    <Container>
+      <Label>
         {label}
-        {required && <span style={{ color: "red" }}> *</span>}
-      </label>
-      {description && (
-        <p
-          style={{
-            fontSize: "0.875rem",
-            color: "#666",
-            marginBottom: "0.5rem",
-          }}
-        >
-          {description}
-        </p>
-      )}
+        {required && <RequiredIndicator> *</RequiredIndicator>}
+      </Label>
+      {description && <Description>{description}</Description>}
 
       <UploadButton type="button" onClick={handleButtonClick}>
         <CloudIcon>☁️</CloudIcon>
@@ -114,14 +128,8 @@ const FileUploadRenderer: React.FC<FileUploadRendererProps> = ({
 
       <FileInfo>Max file size 5MB.</FileInfo>
 
-      {errors && (
-        <div
-          style={{ color: "red", fontSize: "0.75rem", marginTop: "0.25rem" }}
-        >
-          {errors}
-        </div>
-      )}
-    </div>
+      {errors && <ErrorMessage>{errors}</ErrorMessage>}
+    </Container>
   );
 };
 

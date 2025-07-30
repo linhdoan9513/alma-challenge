@@ -303,11 +303,7 @@ const StyledJsonForms = styled.div`
     transition: color 0.2s ease;
 
     &.Mui-checked {
-      color: var(--primary-color);
-    }
-
-    &:hover {
-      color: var(--primary-color);
+      color: black;
     }
   }
 
