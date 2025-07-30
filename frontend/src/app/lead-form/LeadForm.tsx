@@ -28,15 +28,15 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import CountrySelect from "./CountrySelect";
-import CustomResumeUpload from "./CustomResumeUpload";
+import CountrySelect from "../../components/CountrySelect";
+import CustomResumeUpload from "../../components/CustomResumeUpload";
 import {
   leadFormUISchema1,
   leadFormUISchema3,
   personalInfoSchema,
   textareaSchema,
-} from "./LeadFormConfig";
-import VisaCheckboxes from "./VisaCheckboxes";
+} from "../../components/LeadFormConfig";
+import VisaCheckboxes from "../../components/VisaCheckboxes";
 
 // Client-only wrapper to prevent hydration mismatches
 const ClientOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {

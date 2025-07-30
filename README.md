@@ -35,9 +35,11 @@ cd ../frontend && npm install
 ### 2. Database Setup
 
 1. **Set up PostgreSQL database**
+
    - Create a new database: `CREATE DATABASE alma_db;`
 
 2. **Configure environment variables**
+
    ```bash
    # Backend (.env file in backend/ directory)
    DATABASE_URL="postgresql://username:password@localhost:5432/alma_db"
@@ -48,6 +50,7 @@ cd ../frontend && npm install
    ```
 
 3. **Initialize database**
+
    ```bash
    # Generate Prisma client
    npm run db:generate
@@ -90,6 +93,7 @@ backend/
 ```
 
 **Key Features:**
+
 - Express.js REST API
 - Prisma ORM with PostgreSQL
 - JWT authentication
@@ -103,17 +107,30 @@ backend/
 frontend/
 ├── src/
 │   ├── app/             # Next.js app router pages
-│   │   ├── admin/       # Admin dashboard
+│   │   ├── admin/       # Admin dashboard with lead management
+│   │   │   └── login/   # Admin login page
 │   │   ├── lead-form/   # Public lead submission form
-│   │   └── api/         # API routes (if needed)
+│   │   ├── layout.tsx   # Root layout
+│   │   └── page.tsx     # Home page
 │   ├── components/      # Reusable React components
+│   │   ├── LeadForm.tsx # Main lead form component
+│   │   ├── CountrySelect.tsx # Country selection
+│   │   ├── VisaCheckboxes.tsx # Visa type selection
+│   │   ├── CustomResumeUpload.tsx # Resume upload
+│   │   └── FileUploadRenderer.tsx # File upload renderer
 │   ├── lib/             # Utilities and API client
+│   │   ├── api.ts       # API client functions
+│   │   └── countries.ts # Countries data
 │   ├── store/           # Redux store
+│   │   ├── leadSlice.ts # Lead state management
+│   │   └── store.ts     # Store configuration
 │   └── styles/          # Global styles
+│       └── GlobalStyles.ts # Styled components
 └── package.json
 ```
 
 **Key Features:**
+
 - Next.js 15 with App Router
 - React 19 with TypeScript
 - Styled Components for styling
@@ -124,12 +141,14 @@ frontend/
 ## 🔐 Authentication
 
 ### Default Admin Credentials
+
 - **Email**: `admin@alma.com`
 - **Password**: `admin123`
 
 **⚠️ Important**: Change these credentials in production!
 
 ### Authentication Flow
+
 1. Admin logs in via `/admin/login`
 2. JWT token is stored in localStorage
 3. Token is sent with API requests
@@ -138,9 +157,11 @@ frontend/
 ## 📊 API Endpoints
 
 ### Public Endpoints
+
 - `POST /api/leads/submit` - Submit new lead
 
 ### Protected Endpoints (Admin Only)
+
 - `POST /api/auth/login` - Admin login
 - `GET /api/auth/profile` - Get user profile
 - `GET /api/leads` - Get all leads (with pagination)
@@ -149,6 +170,7 @@ frontend/
 ## 🎯 Features
 
 ### Lead Management
+
 - ✅ Public lead submission form
 - ✅ Admin dashboard with lead list
 - ✅ Lead status management (PENDING → REACHED_OUT)
@@ -157,6 +179,7 @@ frontend/
 - ✅ Sorting by multiple fields
 
 ### Security
+
 - ✅ JWT authentication
 - ✅ Password hashing with bcrypt
 - ✅ Input validation and sanitization
@@ -165,6 +188,7 @@ frontend/
 - ✅ Protected routes
 
 ### Database
+
 - ✅ PostgreSQL with Prisma ORM
 - ✅ User and Lead models
 - ✅ Proper relationships and constraints
@@ -173,6 +197,7 @@ frontend/
 ## 🛠️ Development
 
 ### Backend Development
+
 ```bash
 cd backend
 npm run dev          # Start development server
@@ -181,6 +206,7 @@ npm run db:studio    # Open Prisma Studio
 ```
 
 ### Frontend Development
+
 ```bash
 cd frontend
 npm run dev          # Start development server
@@ -189,6 +215,7 @@ npm run lint         # Run ESLint
 ```
 
 ### Database Management
+
 ```bash
 # From root directory
 npm run db:generate  # Generate Prisma client
@@ -196,25 +223,8 @@ npm run db:push      # Push schema changes
 npm run db:setup     # Create admin user
 ```
 
-## 🚀 Production Deployment
-
-### Environment Variables
-
-**Backend (.env)**
-```env
-DATABASE_URL="postgresql://username:password@your-db-host:5432/alma_db"
-JWT_SECRET="your-production-secret-key"
-PORT=5000
-NODE_ENV=production
-FRONTEND_URL="https://your-domain.com"
-```
-
-**Frontend (.env.local)**
-```env
-NEXT_PUBLIC_API_URL="https://your-api-domain.com/api"
-```
-
 ### Build and Deploy
+
 ```bash
 # Build both applications
 npm run build
@@ -228,16 +238,19 @@ npm start
 ### Common Issues
 
 1. **Database Connection Error**
+
    - Verify DATABASE_URL is correct
    - Check if PostgreSQL is running
    - Ensure database exists
 
 2. **Authentication Issues**
+
    - Check JWT_SECRET is set
    - Verify admin user was created
    - Clear localStorage and re-login
 
 3. **CORS Errors**
+
    - Check FRONTEND_URL in backend .env
    - Verify frontend is running on correct port
 
@@ -247,6 +260,7 @@ npm start
    - Restart development server
 
 ### Database Commands
+
 ```bash
 # Reset database (⚠️ WARNING: Deletes all data)
 cd backend && npx prisma migrate reset
@@ -257,23 +271,3 @@ cd backend && npx prisma studio
 # Generate new migration
 cd backend && npx prisma migrate dev --name your_migration_name
 ```
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📞 Support
-
-For support and questions:
-1. Check the troubleshooting section
-2. Review the API documentation
-3. Check the console for error messages
-4. Verify all environment variables are set correctly

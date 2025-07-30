@@ -54,24 +54,34 @@ frontend/
 │   │   ├── admin/
 │   │   │   ├── login/
 │   │   │   │   └── page.tsx    # Admin login page
-│   │   │   └── page.tsx        # Admin dashboard
+│   │   │   └── page.tsx        # Admin dashboard with lead management
 │   │   ├── lead-form/
 │   │   │   └── page.tsx        # Public lead form
 │   │   ├── globals.css         # Global styles
 │   │   ├── layout.tsx          # Root layout
 │   │   └── page.tsx            # Home page
 │   ├── components/
-│   │   ├── LeadForm.tsx        # Lead form component
-│   │   ├── LeadFormConfig.ts   # Form configuration
-│   │   └── ClientWrapper.tsx   # Client-side wrapper
+│   │   ├── LeadForm.tsx        # Main lead form component
+│   │   ├── LeadFormConfig.ts   # JsonForms configuration
+│   │   ├── CountrySelect.tsx   # Country selection component
+│   │   ├── CountrySelectRenderer.tsx # JsonForms renderer for countries
+│   │   ├── VisaCheckboxes.tsx  # Visa type selection
+│   │   ├── CustomResumeUpload.tsx # Resume upload component
+│   │   ├── FileUploadRenderer.tsx # JsonForms file upload renderer
+│   │   ├── SessionProvider.tsx # Session management
+│   │   ├── ClientWrapper.tsx   # Client-side wrapper
+│   │   └── ThemeProvider.tsx   # Theme provider
 │   ├── lib/
-│   │   └── api.ts              # API client functions
+│   │   ├── api.ts              # API client functions
+│   │   └── countries.ts        # Countries data and utilities
 │   ├── store/
 │   │   ├── leadSlice.ts        # Redux slice for leads
 │   │   └── store.ts            # Redux store configuration
-│   └── styles/
-│       ├── GlobalStyles.ts     # Global styled components
-│       └── styled.d.ts         # Styled components types
+│   ├── styles/
+│   │   ├── GlobalStyles.ts     # Global styled components
+│   │   └── styled.d.ts         # Styled components types
+│   └── types/
+│       └── jest.d.ts           # Jest type definitions
 ├── public/               # Static assets
 ├── package.json          # Frontend dependencies
 ├── package-lock.json     # Lock file

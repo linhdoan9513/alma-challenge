@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@/test-utils";
-import LeadForm from "../LeadForm";
+import LeadForm from "../../app/lead-form/LeadForm";
 
 // Mock the API
 jest.mock("@/lib/api", () => ({

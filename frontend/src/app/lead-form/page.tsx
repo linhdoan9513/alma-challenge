@@ -1,9 +1,9 @@
 "use client";
 
+import LeadForm from "@/app/lead-form/LeadForm";
+import { store } from "@/store/store";
 import React from "react";
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
-import LeadForm from "@/components/LeadForm";
 
 const LeadFormPage: React.FC = () => {
   return (
