@@ -26,7 +26,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import CustomResumeUpload from "./CustomResumeUpload";
-import { leadFormSchema, leadFormUISchema } from "./LeadFormConfig";
+import {
+  leadFormUISchema1,
+  leadFormUISchema2,
+  leadFormUISchema3,
+  personalInfoSchema,
+  textareaSchema,
+  visaSchema,
+} from "./LeadFormConfig";
 
 // Client-only wrapper to prevent hydration mismatches
 const ClientOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -51,12 +58,13 @@ const Page = styled.div`
 `;
 
 const Header = styled.header`
-  background: #e8f0d7 url("/header-background.jpg") no-repeat left center;
-  background-size: cover;
-  padding: 2rem 1rem;
+  background: #d9dea6;
   display: flex;
   align-items: center;
-  min-height: 200px;
+  min-height: 150px;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     padding: 3rem 2rem;
@@ -65,31 +73,70 @@ const Header = styled.header`
 
   @media (min-width: 1024px) {
     padding: 4rem 2rem;
-    min-height: 300px;
+    min-height: 350px;
   }
 `;
 
 const HeaderContent = styled.div`
-  max-width: 1200px;
   width: 100%;
-  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+  padding-left: 120px;
+
+  @media (min-width: 768px) {
+    padding-left: 250px;
+  }
+
+  @media (min-width: 1024px) {
+    padding-left: 300px;
+  }
 `;
 
 const Brand = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: var(--primary-color);
+  color: black;
   text-transform: lowercase;
+  margin-bottom: 0.5rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
+`;
+
+const CircularShapes = styled.img`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+
+  @media (min-width: 768px) {
+    width: 200px;
+    height: 250px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  @media (min-width: 1024px) {
+    width: 250px;
+    height: 350px;
+  }
 `;
 
 const Heading = styled.h1`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-color);
-  text-align: right;
+  color: black;
+  text-align: left;
+  margin: 0;
+  line-height: 1.2;
 
   @media (min-width: 768px) {
     font-size: 2.25rem;
@@ -103,7 +150,7 @@ const Heading = styled.h1`
 const Section = styled.section`
   background: white;
   flex: 1;
-  padding: 2rem 1rem;
+  padding: 1.5rem 0.5rem;
   width: 100%;
 
   @media (min-width: 768px) {
@@ -113,25 +160,17 @@ const Section = styled.section`
   @media (min-width: 1024px) {
     padding: 4rem 2rem;
   }
-
-  @media (max-width: 480px) {
-    padding: 1.5rem 0.5rem;
-  }
 `;
 
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   width: 100%;
 
-  @media (max-width: 768px) {
-    padding: 0 0.5rem;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 0.25rem;
+  @media (min-width: 768px) {
+    padding: 0 1rem;
   }
 `;
 
@@ -157,7 +196,7 @@ const Icon = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: black;
   margin: 0;
@@ -516,7 +555,7 @@ const LeadForm: React.FC = () => {
     setResumeFile(null);
   }, [dispatch, router]);
 
-  const handleFormChange = useCallback(
+  const handleChange = useCallback(
     (event: JsonFormsChangeEvent) => {
       dispatch(updateFormData(event.data));
     },
@@ -549,6 +588,26 @@ const LeadForm: React.FC = () => {
         return;
       }
 
+      // Validate LinkedIn URL format
+      const linkedinUrl = formData.linkedin.trim();
+      const urlPattern = /^https?:\/\/.+/;
+
+      if (!urlPattern.test(linkedinUrl)) {
+        dispatch(
+          setError(
+            "Please provide a valid LinkedIn or website URL starting with http:// or https://"
+          )
+        );
+        return;
+      }
+
+      try {
+        new URL(linkedinUrl);
+      } catch {
+        dispatch(setError("Please provide a valid LinkedIn or website URL"));
+        return;
+      }
+
       dispatch(setSubmitting(true));
       dispatch(setError(null));
 
@@ -568,13 +627,23 @@ const LeadForm: React.FC = () => {
         if (resumeFile) {
           formDataToSend.append("resume", resumeFile);
         }
-
-        console.log("Submitting form with resume file:", resumeFile);
         const response = await submitLeadForm(formDataToSend);
         dispatch(setSubmitted(true));
       } catch (err) {
         if (err instanceof ApiError) {
-          dispatch(setError(err.message));
+          // Handle specific API errors with user-friendly messages
+          if (
+            err.message.includes("LinkedIn") ||
+            err.message.includes("website URL")
+          ) {
+            dispatch(
+              setError(
+                "Please provide a valid LinkedIn or website URL starting with http:// or https://"
+              )
+            );
+          } else {
+            dispatch(setError(err.message));
+          }
         } else {
           dispatch(setError("Submission failed. Please try again."));
         }
@@ -591,14 +660,13 @@ const LeadForm: React.FC = () => {
       {isSubmitted ? (
         <Page>
           <Header>
+            <CircularShapes src="/circular-shapes.png" alt="Circular shapes" />
             <HeaderContent>
               <Brand>alma</Brand>
               <Heading>
                 Get An Assessment
                 <br />
-                Of Your
-                <br />
-                Immigration Case
+                Of Your Immigration Case
               </Heading>
             </HeaderContent>
           </Header>
@@ -622,14 +690,13 @@ const LeadForm: React.FC = () => {
       ) : (
         <Page>
           <Header>
+            <CircularShapes src="/circular-shapes.png" alt="Circular shapes" />
             <HeaderContent>
               <Brand>alma</Brand>
               <Heading>
                 Get An Assessment
                 <br />
-                Of Your
-                <br />
-                Immigration Case
+                Of Your Immigration Case
               </Heading>
             </HeaderContent>
           </Header>
@@ -652,8 +719,8 @@ const LeadForm: React.FC = () => {
 
                 <StyledJsonForms>
                   <JsonForms
-                    schema={leadFormSchema}
-                    uischema={leadFormUISchema}
+                    schema={personalInfoSchema}
+                    uischema={leadFormUISchema1}
                     data={formData}
                     renderers={
                       materialRenderers as JsonFormsRendererRegistryEntry[]
@@ -661,19 +728,56 @@ const LeadForm: React.FC = () => {
                     cells={
                       materialCells as JsonFormsCellRendererRegistryEntry[]
                     }
-                    onChange={handleFormChange}
+                    onChange={handleChange}
                     validationMode="ValidateAndHide"
                   />
-
-                  <CustomResumeUpload
-                    value={formData.resume}
-                    onChange={(value: string, file?: File) => {
-                      dispatch(updateFormData({ resume: value }));
-                      setResumeFile(file || null);
-                    }}
+                </StyledJsonForms>
+                <FormHeader>
+                  <Icon>🎯</Icon>
+                  <Title>Visa categories of interest?</Title>
+                </FormHeader>
+                <StyledJsonForms>
+                  <JsonForms
+                    schema={visaSchema}
+                    uischema={leadFormUISchema2}
+                    data={formData}
+                    renderers={
+                      materialRenderers as JsonFormsRendererRegistryEntry[]
+                    }
+                    cells={
+                      materialCells as JsonFormsCellRendererRegistryEntry[]
+                    }
+                    onChange={handleChange}
+                    validationMode="ValidateAndHide"
                   />
                 </StyledJsonForms>
+                <FormHeader>
+                  <Icon>💬</Icon>
+                  <Title>How can we help you ?</Title>
+                </FormHeader>
 
+                <StyledJsonForms>
+                  <JsonForms
+                    schema={textareaSchema}
+                    uischema={leadFormUISchema3}
+                    data={formData}
+                    renderers={
+                      materialRenderers as JsonFormsRendererRegistryEntry[]
+                    }
+                    cells={
+                      materialCells as JsonFormsCellRendererRegistryEntry[]
+                    }
+                    onChange={handleChange}
+                    validationMode="ValidateAndHide"
+                  />
+                </StyledJsonForms>
+                <CustomResumeUpload
+                  value={formData.resume}
+                  onChange={(value: string, file?: File) => {
+                    dispatch(updateFormData({ resume: value }));
+                    setResumeFile(file || null);
+                  }}
+                />
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Submitting..." : "Submit"}
                 </Button>

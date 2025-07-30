@@ -7,24 +7,26 @@ const UploadButton = styled.button`
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   padding: 1rem;
-  background-color: #f8f9fa;
-  border: 2px dashed #dee2e6;
+  background-color: white;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
-  color: #6c757d;
+  color: #666;
+  margin-bottom: 1.5rem;
 
   &:hover {
-    background-color: #e9ecef;
-    border-color: #adb5bd;
+    border-color: var(--primary-color);
   }
 
   &:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
   }
 `;
 
@@ -92,7 +94,7 @@ const CustomResumeUpload: React.FC<CustomResumeUploadProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: "1rem" }}>
+    <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
       <Label>
         {label}
         {required && <span style={{ color: "red" }}> *</span>}

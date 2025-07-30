@@ -45,7 +45,26 @@ const leadSlice = createSlice({
   initialState,
   reducers: {
     updateFormData: (state, action: PayloadAction<Partial<LeadFormData>>) => {
-      state.formData = { ...state.formData, ...action.payload };
+      const current = state.formData;
+      const incoming = action.payload;
+
+      let changed = false;
+      for (const key in incoming) {
+        if (
+          incoming[key as keyof LeadFormData] !==
+          current[key as keyof LeadFormData]
+        ) {
+          changed = true;
+          break;
+        }
+      }
+
+      if (changed) {
+        state.formData = {
+          ...state.formData,
+          ...incoming,
+        };
+      }
     },
     setSubmitting: (state, action: PayloadAction<boolean>) => {
       state.isSubmitting = action.payload;
