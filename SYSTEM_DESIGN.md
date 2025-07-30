@@ -326,6 +326,31 @@ App (layout.tsx)
     └── styled.d.ts
 ```
 
+### User Experience & Interface Design
+
+#### 1. Admin Dashboard UX Patterns
+
+**Inline Status Management**: Status buttons are embedded directly within the data grid for better user experience. This design decision provides several benefits:
+
+- **Contextual Actions**: Users can update lead status without navigating away from the list view
+- **Reduced Cognitive Load**: No need to open separate modals or forms for simple status changes
+- **Faster Workflow**: One-click status updates streamline the lead management process
+- **Visual Feedback**: Immediate visual confirmation of status changes
+- **Responsive Design**: Status dropdowns adapt to different screen sizes with appropriate column widths
+
+**Implementation Details**:
+
+- Material-UI Select components embedded in table cells
+- Optimistic UI updates for immediate feedback
+- Proper column width allocation (20% for status column) to prevent text truncation
+- Real-time API calls with error handling and rollback on failure
+
+#### 2. Form Design Patterns
+
+**Progressive Disclosure**: Complex forms are broken down into logical sections to reduce cognitive load and improve completion rates.
+
+**Validation Feedback**: Real-time validation with clear error messages and visual indicators.
+
 ### Data Flow Architecture
 
 #### 1. Form Submission Flow
