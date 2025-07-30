@@ -81,14 +81,14 @@ const HeaderContent = styled.div`
 const Brand = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--primary-color);
   text-transform: lowercase;
 `;
 
 const Heading = styled.h1`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: var(--primary-color);
   text-align: right;
 
   @media (min-width: 768px) {
@@ -159,7 +159,7 @@ const Icon = styled.div`
 const Title = styled.h2`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: black;
   margin: 0;
   text-align: center;
 
@@ -169,7 +169,7 @@ const Title = styled.h2`
 `;
 
 const Description = styled.p`
-  color: #666;
+  color: black;
   margin-bottom: 2.5rem;
   line-height: 1.6;
   font-size: 1rem;
@@ -177,6 +177,7 @@ const Description = styled.p`
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  font-weight: 600;
 `;
 
 const StyledJsonForms = styled.div`
@@ -233,46 +234,23 @@ const StyledJsonForms = styled.div`
     display: none !important;
   }
 
-  /* Hide labels when input has content */
-  .MuiInputBase-root:has(input:not(:placeholder-shown)) .MuiInputLabel-root,
-  .MuiInputBase-root:has(textarea:not(:placeholder-shown)) .MuiInputLabel-root {
-    display: none !important;
-  }
-
-  /* Alternative approach for browsers that don't support :has() */
-  .MuiInputBase-root.Mui-focused .MuiInputLabel-root,
-  .MuiInputBase-root.Mui-focused .MuiInputLabel-root.MuiInputLabel-shrink {
-    display: none !important;
-  }
-
-  /* Dynamic label visibility - show when empty, hide when filled */
-  .MuiInputLabel-root {
-    transition: opacity 0.2s ease;
-  }
-
-  /* Hide labels for filled fields using data attributes */
-  .MuiInputBase-root[data-has-value="true"] .MuiInputLabel-root {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
   /* Hide checkbox labels when checked */
   .MuiCheckbox-root.Mui-checked ~ .MuiFormControlLabel-label {
-    opacity: 0 !important;
     pointer-events: none !important;
+    color: black;
   }
 
   .MuiOutlinedInput-root {
-    border: 1px solid #e0e0e0;
+    // border: 1px solid #e0e0e0;
     width: 100%;
     transition: border-color 0.2s ease;
 
     &:hover {
-      border-color: #333;
+      border-color: var(--primary-color);
     }
 
     &.Mui-focused {
-      border-color: #333;
+      border-color: var(--primary-color);
       box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
     }
 
@@ -288,12 +266,7 @@ const StyledJsonForms = styled.div`
     font-size: 0.9rem;
 
     &.Mui-focused {
-      color: #333;
-    }
-
-    /* Remove error styling */
-    &.Mui-error {
-      color: #666;
+      color: black;
     }
   }
 
@@ -311,20 +284,6 @@ const StyledJsonForms = styled.div`
     width: 100%;
   }
 
-  /* Visa categories label with dice icon */
-  // .MuiFormLabel-root:contains("Visa categories of interest?"),
-  // .MuiTypography-root:contains("Visa categories of interest?") {
-  //   font-size: 1.25rem;
-  //   font-weight: 600;
-  //   color: #333;
-  //   margin: 2rem 0 1rem 0;
-  //   text-align: center;
-  //   display: flex;
-  //   align-items: center;
-  //   justify-content: center;
-  //   gap: 0.5rem;
-  // }
-
   .MuiFormControlLabel-root {
     justify-content: flex-start !important;
     width: 100% !important;
@@ -333,7 +292,7 @@ const StyledJsonForms = styled.div`
 
   .MuiFormControlLabel-label {
     font-weight: 500;
-    color: #333;
+    color: black;
     font-size: 1rem;
   }
 
@@ -344,11 +303,11 @@ const StyledJsonForms = styled.div`
     transition: color 0.2s ease;
 
     &.Mui-checked {
-      color: #333;
+      color: var(--primary-color);
     }
 
     &:hover {
-      color: #333;
+      color: var(--primary-color);
     }
   }
 
@@ -358,18 +317,18 @@ const StyledJsonForms = styled.div`
     padding: 1rem;
     font-size: 1rem;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: none;
     background-color: white;
-    color: #333;
+    color: var(--primary-color);
     resize: vertical;
     line-height: 1.5;
     width: 100%;
     transition: border-color 0.2s ease;
 
     &:focus {
-      border-color: #333;
+      border: none;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
+      box-shadow: none;
     }
 
     &::placeholder {
@@ -387,7 +346,7 @@ const StyledJsonForms = styled.div`
   /* Better label styling */
   .MuiInputLabel-root {
     font-weight: 500;
-    color: #333;
+    color: var(--primary-color);
   }
 
   /* Consistent spacing for all form elements */
@@ -440,13 +399,6 @@ const StyledJsonForms = styled.div`
     --mui-palette-error-light: #e0e0e0 !important;
     --mui-palette-error-dark: #e0e0e0 !important;
   }
-
-  /* Force remove any error styling */
-  .Mui-error,
-  .Mui-error * {
-    color: inherit !important;
-    border-color: #e0e0e0 !important;
-  }
 `;
 
 const Button = styled.button`
@@ -454,7 +406,7 @@ const Button = styled.button`
   max-width: 500px;
   padding: 1rem 2rem;
   margin-top: 2rem;
-  background: #333;
+  background: black;
   color: white;
   font-weight: 600;
   font-size: 1.1rem;
@@ -485,7 +437,7 @@ const Button = styled.button`
 
 const Error = styled.div`
   background: #f8f9fa;
-  color: #333;
+  color: var(--primary-color);
   border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 1rem;
@@ -497,7 +449,7 @@ const Success = styled.div`
   background: white;
   padding: 3rem 2rem;
   margin: 2rem 0;
-  color: #333;
+  color: var(--primary-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -521,12 +473,12 @@ const DocumentIcon = styled.div`
 const ThankYouTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: var(--primary-color);
   margin: 0;
 `;
 
 const ThankYouMessage = styled.p`
-  color: #333;
+  color: var(--primary-color);
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
@@ -535,7 +487,7 @@ const ThankYouMessage = styled.p`
 `;
 
 const HomeButton = styled(Link)`
-  background: #333;
+  background: var(--primary-color);
   color: white;
   padding: 1rem 2rem;
   border-radius: 8px;

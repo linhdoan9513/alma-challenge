@@ -93,7 +93,7 @@ const SidebarHeader = styled.div`
 const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--primary-color);
 
   @media (max-width: 768px) {
     font-size: 1.25rem;
@@ -187,7 +187,7 @@ const PageHeader = styled.div`
 const PageTitle = styled.h1`
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+    color: var(--primary-color);
   margin: 0 0 1.5rem 0;
 
   @media (max-width: 768px) {
@@ -232,7 +232,7 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #333;
+    border-  color: var(--primary-color);
   }
 `;
 
@@ -260,7 +260,7 @@ const StatusFilter = styled.select`
 
   &:focus {
     outline: none;
-    border-color: #333;
+    border-  color: var(--primary-color);
   }
 `;
 
@@ -293,7 +293,7 @@ const TableHeaderCell = styled.th`
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #333;
+    color: var(--primary-color);
   border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
   user-select: none;
@@ -348,7 +348,7 @@ const TableRow = styled.tr`
 
 const TableCell = styled.td`
   padding: 1rem;
-  color: #333;
+    color: var(--primary-color);
   text-align: left;
   vertical-align: middle;
 
@@ -364,7 +364,7 @@ const StatusSelect = styled.select`
   border-radius: 4px;
   background: white;
   font-size: inherit;
-  color: #333;
+    color: var(--primary-color);
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");

@@ -25,7 +25,7 @@ const LoginCard = styled.div`
 const LoginTitle = styled.h1`
   text-align: center;
   margin-bottom: 2rem;
-  color: #333;
+  color: var(--primary-color);
   font-size: 1.5rem;
   font-weight: 600;
 `;
