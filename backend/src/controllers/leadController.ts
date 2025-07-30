@@ -51,12 +51,9 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
     let resumePath = undefined;
     let resumeFileName = undefined;
 
-    console.log('File upload received:', resumeFile);
-
     if (resumeFile) {
       resumePath = resumeFile.path;
       resumeFileName = resumeFile.originalname;
-      console.log('Resume file saved:', { path: resumePath, name: resumeFileName });
     }
 
     // Determine visa type from form data
@@ -91,19 +88,6 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
     const lead = await prisma.lead.create({
       data: sanitizedData,
     });
-
-    console.log('Lead submission received:', lead);
-
-    // Mock email sending
-    console.log(`Sending confirmation email to: ${sanitizedData.email}`);
-    console.log(
-      `Email content: Thank you ${sanitizedData.firstName} ${sanitizedData.lastName} for your submission...`
-    );
-
-    // Mock CRM integration
-    console.log(
-      `Creating lead in CRM for: ${sanitizedData.firstName} ${sanitizedData.lastName}`
-    );
 
     res.json({
       success: true,

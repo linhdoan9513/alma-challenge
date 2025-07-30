@@ -306,7 +306,7 @@ App (layout.tsx)
 │       ├── LoginForm (/admin/login/page.tsx)
 │       ├── LeadList (embedded in admin page)
 │       └── LeadDetail (embedded in admin page)
-├── Components (Shared Component can be reused across codebase)
+├── Components (Shared component can be reused across codebase)
 │   ├── CountrySelect
 │   ├── CountrySelectRenderer
 │   ├── VisaCheckboxes
