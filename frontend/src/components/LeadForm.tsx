@@ -19,7 +19,10 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Description as DescriptionIcon } from "@mui/icons-material";
+import {
+  Casino as CasinoIcon,
+  Description as DescriptionIcon,
+} from "@mui/icons-material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -185,13 +188,14 @@ const FormHeader = styled.div`
 const Icon = styled.div`
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(230, 230, 250, 0.3);
   font-size: 1.5rem;
+  color: #6a5acd;
 `;
 
 const Title = styled.h2`
@@ -704,7 +708,9 @@ const LeadForm: React.FC = () => {
 
               <form onSubmit={handleSubmit}>
                 <FormHeader>
-                  <Icon>📄</Icon>
+                  <Icon>
+                    <DescriptionIcon />
+                  </Icon>
                   <Title>Want to understand your visa options?</Title>
                 </FormHeader>
 
@@ -749,7 +755,9 @@ const LeadForm: React.FC = () => {
                   />
                 </div>
                 <FormHeader>
-                  <Icon>🎯</Icon>
+                  <Icon>
+                    <CasinoIcon />
+                  </Icon>
                   <Title>Visa categories of interest?</Title>
                 </FormHeader>
                 <div
