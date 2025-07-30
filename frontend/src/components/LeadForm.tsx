@@ -3,6 +3,7 @@
 import { ApiError, submitLeadForm } from "@/lib/api";
 import {
   LeadFormData,
+  resetForm,
   setError,
   setSubmitted,
   setSubmitting,
@@ -20,9 +21,11 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { Description as DescriptionIcon } from "@mui/icons-material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import CustomResumeUpload from "./CustomResumeUpload";
 import { leadFormSchema, leadFormUISchema } from "./LeadFormConfig";
 
 // Client-only wrapper to prevent hydration mismatches
@@ -492,9 +495,17 @@ interface JsonFormsChangeEvent {
 
 const LeadForm: React.FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { formData, isSubmitting, isSubmitted, error } = useSelector(
     (state: RootState) => state.lead
   );
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
+  // Reset form state when component mounts or when user navigates to this page
+  useEffect(() => {
+    dispatch(resetForm());
+    setResumeFile(null);
+  }, [dispatch, router]);
 
   const handleFormChange = useCallback(
     (event: JsonFormsChangeEvent) => {
@@ -533,7 +544,24 @@ const LeadForm: React.FC = () => {
       dispatch(setError(null));
 
       try {
-        const response = await submitLeadForm(formData);
+        // Create FormData for file upload
+        const formDataToSend = new FormData();
+
+        // Add all form fields
+        Object.keys(formData).forEach((key) => {
+          formDataToSend.append(
+            key,
+            String(formData[key as keyof LeadFormData])
+          );
+        });
+
+        // Add resume file if exists
+        if (resumeFile) {
+          formDataToSend.append("resume", resumeFile);
+        }
+
+        console.log("Submitting form with resume file:", resumeFile);
+        const response = await submitLeadForm(formDataToSend);
         dispatch(setSubmitted(true));
       } catch (err) {
         if (err instanceof ApiError) {
@@ -628,6 +656,14 @@ const LeadForm: React.FC = () => {
                     validationMode="ValidateAndHide"
                   />
                 </StyledJsonForms>
+
+                <CustomResumeUpload
+                  value={formData.resume}
+                  onChange={(value: string, file?: File) => {
+                    dispatch(updateFormData({ resume: value }));
+                    setResumeFile(file || null);
+                  }}
+                />
 
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Submitting..." : "Submit"}

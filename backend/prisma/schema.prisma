@@ -32,6 +32,9 @@ model Lead {
   linkedinUrl    String   @map("linkedin_url")
   country        String
   additionalInfo String?  @map("additional_info")
+  resumePath     String?  @map("resume_path")
+  resumeFileName String?  @map("resume_file_name")
+  resumeUrl      String?  @map("resume_url")
   status         String   @default("PENDING")
   o1Visa         Boolean  @default(false) @map("o1_visa")
   eb1aVisa       Boolean  @default(false) @map("eb1a_visa")

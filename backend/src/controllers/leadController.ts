@@ -36,6 +36,7 @@ function isRateLimited(email: string): boolean {
 export const submitLead = async (req: Request, res: Response): Promise<void> => {
   try {
     const body = req.body;
+    console.log('Received form data:', body);
 
     // Check rate limiting based on email
     if (isRateLimited(body.email)) {
@@ -44,6 +45,19 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
           'Too many submission attempts from this email. Please try again later.',
       });
       return;
+    }
+
+    // Handle file upload
+    const resumeFile = req.file;
+    let resumePath = undefined;
+    let resumeFileName = undefined;
+
+    console.log('File upload received:', resumeFile);
+
+    if (resumeFile) {
+      resumePath = resumeFile.path;
+      resumeFileName = resumeFile.originalname;
+      console.log('Resume file saved:', { path: resumePath, name: resumeFileName });
     }
 
     // Sanitize inputs
@@ -56,10 +70,12 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
       additionalInfo: body.openInput
         ? sanitizeInput(body.openInput)
         : undefined,
-      o1Visa: body.o1Visa || false,
-      eb1aVisa: body.eb1aVisa || false,
-      eb2NiwVisa: body.eb2NiwVisa || false,
-      dontKnowVisa: body.dontKnowVisa || false,
+      resumePath,
+      resumeFileName,
+      o1Visa: body.o1Visa === 'true' || body.o1Visa === true,
+      eb1aVisa: body.eb1aVisa === 'true' || body.eb1aVisa === true,
+      eb2NiwVisa: body.eb2NiwVisa === 'true' || body.eb2NiwVisa === true,
+      dontKnowVisa: body.dontKnowVisa === 'true' || body.dontKnowVisa === true,
       status: 'PENDING',
     };
 
@@ -89,6 +105,10 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
     });
   } catch (error) {
     console.error('Error processing lead submission:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     res.status(500).json({
       error: 'Internal server error. Please try again later.',
     });
@@ -154,6 +174,8 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
         eb2NiwVisa: lead.eb2NiwVisa,
         dontKnowVisa: lead.dontKnowVisa,
         openInput: lead.additionalInfo,
+        resumePath: lead.resumePath,
+        resumeFileName: lead.resumeFileName,
       },
       status: lead.status,
     }));

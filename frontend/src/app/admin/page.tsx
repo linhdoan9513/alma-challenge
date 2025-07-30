@@ -22,6 +22,8 @@ interface Lead {
   linkedin: string;
   visaCategories: string[];
   additionalInfo?: string;
+  resumePath?: string;
+  resumeFileName?: string;
 }
 
 interface ApiSubmission {
@@ -38,6 +40,8 @@ interface ApiSubmission {
     eb2NiwVisa: boolean;
     dontKnowVisa: boolean;
     openInput?: string;
+    resumePath?: string;
+    resumeFileName?: string;
   };
   status: string;
 }
@@ -54,6 +58,10 @@ const AdminContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Sidebar = styled.div`
@@ -64,16 +72,32 @@ const Sidebar = styled.div`
   flex-direction: column;
   padding: 2rem 1.5rem;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const SidebarHeader = styled.div`
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 1rem;
+  }
 `;
 
 const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
   color: #333;
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const Navigation = styled.nav`
@@ -81,6 +105,12 @@ const Navigation = styled.nav`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const NavLink = styled.a.withConfig({
@@ -97,6 +127,13 @@ const NavLink = styled.a.withConfig({
   &:hover {
     background: #f0f0f0;
   }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    flex: 1;
+    text-align: center;
+  }
 `;
 
 const SidebarFooter = styled.div`
@@ -107,6 +144,11 @@ const SidebarFooter = styled.div`
   background: #f8f9fa;
   border-radius: 8px;
   margin-top: auto;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
 `;
 
 const AdminAvatar = styled.div`
@@ -120,12 +162,22 @@ const AdminAvatar = styled.div`
   color: white;
   font-weight: 600;
   font-size: 0.875rem;
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
 `;
 
 const MainContent = styled.main`
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const PageHeader = styled.div`
@@ -137,6 +189,11 @@ const PageTitle = styled.h1`
   font-weight: 700;
   color: #333;
   margin: 0 0 1.5rem 0;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin: 0 0 1rem 0;
+  }
 `;
 
 const SearchFilterBar = styled.div`
@@ -144,12 +201,22 @@ const SearchFilterBar = styled.div`
   gap: 1rem;
   align-items: center;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
 `;
 
 const SearchContainer = styled.div`
   position: relative;
   flex: 1;
   max-width: 400px;
+
+  @media (max-width: 768px) {
+    max-width: none;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -201,11 +268,19 @@ const TableContainer = styled.div`
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
 `;
 
 const Table = styled.table`
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   table-layout: fixed;
 `;
@@ -226,6 +301,11 @@ const TableHeaderCell = styled.th`
 
   &:hover {
     background: #f0f0f0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -271,6 +351,11 @@ const TableCell = styled.td`
   color: #333;
   text-align: left;
   vertical-align: middle;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
 `;
 
 const StatusSelect = styled.select`
@@ -433,6 +518,8 @@ const AdminPage: React.FC = () => {
           submission.data.dontKnowVisa && "I don't know",
         ].filter(Boolean) as string[],
         additionalInfo: submission.data.openInput,
+        resumePath: submission.data.resumePath,
+        resumeFileName: submission.data.resumeFileName,
       }));
 
       setLeads(transformedLeads);
@@ -631,8 +718,9 @@ const AdminPage: React.FC = () => {
           <Table>
             <colgroup>
               <col style={{ width: '25%' }} />
-              <col style={{ width: '25%' }} />
-              <col style={{ width: '25%' }} />
+              <col style={{ width: '20%' }} />
+              <col style={{ width: '15%' }} />
+              <col style={{ width: '15%' }} />
               <col style={{ width: '25%' }} />
             </colgroup>
             <TableHeader>
@@ -677,6 +765,9 @@ const AdminPage: React.FC = () => {
                     />
                   </SortIcon>
                 </TableHeaderCell>
+                <TableHeaderCell>
+                  <span>Resume</span>
+                </TableHeaderCell>
               </tr>
             </TableHeader>
             <TableBody>
@@ -699,6 +790,20 @@ const AdminPage: React.FC = () => {
                     </StatusSelect>
                   </TableCell>
                   <TableCell>{lead.country}</TableCell>
+                  <TableCell>
+                    {lead.resumePath ? (
+                      <a
+                        href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/../uploads/resumes/${lead.resumePath.split('/').pop()}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#007bff', textDecoration: 'underline' }}
+                      >
+                        {lead.resumeFileName || 'View Resume'}
+                      </a>
+                    ) : (
+                      <span style={{ color: '#999' }}>No resume</span>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface LeadFormData {
   firstName: string;
@@ -10,6 +10,7 @@ export interface LeadFormData {
   eb1aVisa: boolean;
   eb2NiwVisa: boolean;
   dontKnowVisa: boolean;
+  resume?: string;
   openInput: string;
 }
 
@@ -22,16 +23,17 @@ interface LeadState {
 
 const initialState: LeadState = {
   formData: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    linkedin: '',
-    country: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    linkedin: "",
+    country: "",
     o1Visa: false,
     eb1aVisa: false,
     eb2NiwVisa: false,
     dontKnowVisa: false,
-    openInput: '',
+    resume: "",
+    openInput: "",
   },
   isSubmitting: false,
   isSubmitted: false,
@@ -39,7 +41,7 @@ const initialState: LeadState = {
 };
 
 const leadSlice = createSlice({
-  name: 'lead',
+  name: "lead",
   initialState,
   reducers: {
     updateFormData: (state, action: PayloadAction<Partial<LeadFormData>>) => {
@@ -54,7 +56,7 @@ const leadSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    resetForm: state => {
+    resetForm: (state) => {
       state.formData = initialState.formData;
       state.isSubmitting = false;
       state.isSubmitted = false;

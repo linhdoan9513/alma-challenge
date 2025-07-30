@@ -53,10 +53,10 @@ export function validateLeadSubmission(
 
   // Validate that at least one visa category is selected
   const hasVisa =
-    req.body.o1Visa ||
-    req.body.eb1aVisa ||
-    req.body.eb2NiwVisa ||
-    req.body.dontKnowVisa;
+    req.body.o1Visa === 'true' || req.body.o1Visa === true ||
+    req.body.eb1aVisa === 'true' || req.body.eb1aVisa === true ||
+    req.body.eb2NiwVisa === 'true' || req.body.eb2NiwVisa === true ||
+    req.body.dontKnowVisa === 'true' || req.body.dontKnowVisa === true;
   if (!hasVisa) {
     res.status(400).json({
       error: 'Please select at least one visa category',

@@ -105,15 +105,17 @@ export async function getProfile(token: string) {
 
 // Lead API functions
 export async function submitLeadForm(
-  formData: LeadFormData
+  formData: LeadFormData | FormData
 ): Promise<ApiResponse> {
   try {
+    const isFormData = formData instanceof FormData;
+
     const response = await fetch(`${API_BASE_URL}/leads/submit`, {
       method: 'POST',
-      headers: {
+      headers: isFormData ? {} : {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: isFormData ? formData : JSON.stringify(formData),
     });
 
     const data = await response.json();

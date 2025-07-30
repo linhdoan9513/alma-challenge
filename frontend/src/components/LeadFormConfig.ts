@@ -58,6 +58,7 @@ export const leadFormSchema: JsonSchema = {
       type: "boolean",
       title: "I don't know",
     },
+
     openInput: {
       type: "string",
       title: "Want to understand your visa options?",
@@ -138,6 +139,7 @@ export const leadFormUISchema: UISchemaElement = {
       type: "Control",
       scope: "#/properties/dontKnowVisa",
     },
+
     {
       type: "Control",
       scope: "#/properties/openInput",
