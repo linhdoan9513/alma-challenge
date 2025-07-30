@@ -36,10 +36,7 @@ model Lead {
   resumeFileName String?  @map("resume_file_name")
   resumeUrl      String?  @map("resume_url")
   status         String   @default("PENDING")
-  o1Visa         Boolean  @default(false) @map("o1_visa")
-  eb1aVisa       Boolean  @default(false) @map("eb1a_visa")
-  eb2NiwVisa     Boolean  @default(false) @map("eb2_niw_visa")
-  dontKnowVisa   Boolean  @default(false) @map("dont_know_visa")
+  visaType       String?  @map("visa_type")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 

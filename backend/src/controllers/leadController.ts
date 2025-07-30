@@ -60,6 +60,18 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
       console.log('Resume file saved:', { path: resumePath, name: resumeFileName });
     }
 
+    // Determine visa type from form data
+    let visaType: string | undefined;
+    if (body.o1Visa === 'true' || body.o1Visa === true) {
+      visaType = 'O1';
+    } else if (body.eb1aVisa === 'true' || body.eb1aVisa === true) {
+      visaType = 'EB1A';
+    } else if (body.eb2NiwVisa === 'true' || body.eb2NiwVisa === true) {
+      visaType = 'EB2_NIW';
+    } else if (body.dontKnowVisa === 'true' || body.dontKnowVisa === true) {
+      visaType = 'DONT_KNOW';
+    }
+
     // Sanitize inputs
     const sanitizedData = {
       firstName: sanitizeInput(body.firstName),
@@ -72,10 +84,7 @@ export const submitLead = async (req: Request, res: Response): Promise<void> => 
         : undefined,
       resumePath,
       resumeFileName,
-      o1Visa: body.o1Visa === 'true' || body.o1Visa === true,
-      eb1aVisa: body.eb1aVisa === 'true' || body.eb1aVisa === true,
-      eb2NiwVisa: body.eb2NiwVisa === 'true' || body.eb2NiwVisa === true,
-      dontKnowVisa: body.dontKnowVisa === 'true' || body.dontKnowVisa === true,
+      visaType,
       status: 'PENDING',
     };
 
@@ -160,25 +169,34 @@ export const getLeads = async (req: Request, res: Response): Promise<void> => {
     ]);
 
     // Transform data to match expected format
-    const submissions = leads.map((lead: any) => ({
-      id: lead.id,
-      timestamp: lead.createdAt.toISOString(),
-      data: {
-        firstName: lead.firstName,
-        lastName: lead.lastName,
-        email: lead.email,
-        linkedin: lead.linkedinUrl,
-        country: lead.country,
-        o1Visa: lead.o1Visa,
-        eb1aVisa: lead.eb1aVisa,
-        eb2NiwVisa: lead.eb2NiwVisa,
-        dontKnowVisa: lead.dontKnowVisa,
-        openInput: lead.additionalInfo,
-        resumePath: lead.resumePath,
-        resumeFileName: lead.resumeFileName,
-      },
-      status: lead.status,
-    }));
+    const submissions = leads.map((lead: any) => {
+      // Convert visa type back to boolean format for frontend compatibility
+      const visaType = lead.visaType;
+      const o1Visa = visaType === 'O1';
+      const eb1aVisa = visaType === 'EB1A';
+      const eb2NiwVisa = visaType === 'EB2_NIW';
+      const dontKnowVisa = visaType === 'DONT_KNOW';
+
+      return {
+        id: lead.id,
+        timestamp: lead.createdAt.toISOString(),
+        data: {
+          firstName: lead.firstName,
+          lastName: lead.lastName,
+          email: lead.email,
+          linkedin: lead.linkedinUrl,
+          country: lead.country,
+          o1Visa,
+          eb1aVisa,
+          eb2NiwVisa,
+          dontKnowVisa,
+          openInput: lead.additionalInfo,
+          resumePath: lead.resumePath,
+          resumeFileName: lead.resumeFileName,
+        },
+        status: lead.status,
+      };
+    });
 
     res.json({
       submissions,
