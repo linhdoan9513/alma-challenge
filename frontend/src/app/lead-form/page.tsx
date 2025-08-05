@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 import { Provider } from "react-redux";
 
-const LeadForm = dynamic(() => import("./LeadForm"), {
+const LeadForm = dynamic(() => import("../../components/forms/LeadForm"), {
   ssr: false,
   loading: () => <div style={{ minHeight: "400px" }} />,
 });

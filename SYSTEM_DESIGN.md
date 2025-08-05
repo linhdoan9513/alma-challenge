@@ -454,7 +454,7 @@ The project uses styled-components for component-level styling without a formal 
 
 - **Component-scoped styling**: Each component defines its own styles
 - **Hardcoded design values**: Colors, spacing, and other design tokens are defined inline
-- **Global styles**: CSS reset and Material-UI overrides in globals.css
+- **Global styles**: Material-UI CssBaseline for CSS reset and theme-based styling through ThemeProvider
 - **No theme provider**: No centralized theme configuration or design tokens - Currently, this has not been implemented, but this should be considered as an enhancement for styling consistency
 - **Material-UI integration**: Leverages Material-UI components for consistent form styling and validation
 - **JsonForms framework**: Uses JsonForms for data-driven form generation with built-in validation and styling consistency
@@ -638,6 +638,7 @@ Load Balancer → Multiple Backend Instances → Shared Database
 #### 1. Advanced Lead Management
 
 - **Follow-up Automation**: Email sequences and reminders
+- **Calendar Scheduling **: Email sequences and reminders
 
 #### 2. Technical Improvements
 

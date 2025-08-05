@@ -1,6 +1,6 @@
 import { Country, sortedCountries } from "@/lib/countries";
 import { Autocomplete, TextField } from "@mui/material";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 interface CountrySelectProps {
   value: string;

@@ -1,14 +1,14 @@
 "use client";
 
-import { submitLeadForm } from "@/lib/api";
+import { submitLeadForm } from "../../lib/api";
 import {
   LeadFormData,
   resetForm,
   setSubmitted,
   setSubmitting,
   updateFormData,
-} from "@/store/leadSlice";
-import { RootState } from "@/store/store";
+} from "../../store/leadSlice";
+import { RootState } from "../../store/store";
 import { JsonFormsRendererRegistryEntry } from "@jsonforms/core";
 import { materialRenderers } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
@@ -21,13 +21,13 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import CountrySelect from "../../components/CountrySelect";
-import CustomResumeUpload from "../../components/CustomResumeUpload";
+import CountrySelect from "./CountrySelect";
+import CustomResumeUpload from "./CustomResumeUpload";
+import VisaCheckboxes from "./VisaCheckboxes";
 import {
   personalInfoSchema,
   textareaSchema,
-} from "../../components/LeadFormConfig";
-import VisaCheckboxes from "../../components/VisaCheckboxes";
+} from "./LeadFormConfig";
 
 /* Layout */
 const Page = styled.div`
