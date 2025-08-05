@@ -1,15 +1,22 @@
 "use client";
 
-import LeadForm from "@/app/lead-form/LeadForm";
 import { store } from "@/store/store";
+import dynamic from "next/dynamic";
 import React from "react";
 import { Provider } from "react-redux";
 
+const LeadForm = dynamic(() => import("./LeadForm"), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: "400px" }} />,
+});
+
 const LeadFormPage: React.FC = () => {
   return (
-    <Provider store={store}>
-      <LeadForm />
-    </Provider>
+    <div suppressHydrationWarning>
+      <Provider store={store}>
+        <LeadForm />
+      </Provider>
+    </div>
   );
 };
 

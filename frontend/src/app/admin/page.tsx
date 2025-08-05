@@ -413,32 +413,6 @@ const Error = styled.div`
 `;
 
 // Component
-// Client-only wrapper to prevent hydration mismatches
-const ClientOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        Loading...
-      </div>
-    );
-  }
-
-  return <>{children}</>;
-};
-
 const AdminPage: React.FC = () => {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
@@ -659,32 +633,30 @@ const AdminPage: React.FC = () => {
   // Loading State
   if (loading) {
     return (
-      <ClientOnly>
-        <AdminContainer>
-          <Sidebar>
-            <SidebarHeader>
-              <Logo>alma</Logo>
-            </SidebarHeader>
-            <Navigation>
-              <NavLink active={true}>Leads</NavLink>
-              <NavLink>Settings</NavLink>
-            </Navigation>
-            <SidebarFooter>
-              <AdminAvatar>A</AdminAvatar>
-              <span>Admin</span>
-            </SidebarFooter>
-          </Sidebar>
-          <MainContent>
-            <Loading>Loading leads...</Loading>
-          </MainContent>
-        </AdminContainer>
-      </ClientOnly>
+      <AdminContainer>
+        <Sidebar>
+          <SidebarHeader>
+            <Logo>alma</Logo>
+          </SidebarHeader>
+          <Navigation>
+            <NavLink active={true}>Leads</NavLink>
+            <NavLink>Settings</NavLink>
+          </Navigation>
+          <SidebarFooter>
+            <AdminAvatar>A</AdminAvatar>
+            <span>Admin</span>
+          </SidebarFooter>
+        </Sidebar>
+        <MainContent>
+          <Loading>Loading leads...</Loading>
+        </MainContent>
+      </AdminContainer>
     );
   }
 
   // Main Render
   return (
-    <ClientOnly>
+    <>
       <AdminContainer>
         <Sidebar>
           <SidebarHeader>
@@ -877,7 +849,7 @@ const AdminPage: React.FC = () => {
           </PaginationContainer>
         </MainContent>
       </AdminContainer>
-    </ClientOnly>
+    </>
   );
 };
 
