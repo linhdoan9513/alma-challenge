@@ -1,8 +1,7 @@
 "use client";
 
-import EmotionRegistry from "@/components/EmotionRegistry";
-import { CssBaseline } from "@mui/material";
-import "./globals.css"; // or any global styles
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { theme } from "./theme";
 
 export default function RootLayout({
   children,
@@ -11,11 +10,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <EmotionRegistry>
+      <body suppressHydrationWarning>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
           {children}
-        </EmotionRegistry>
+        </ThemeProvider>
       </body>
     </html>
   );

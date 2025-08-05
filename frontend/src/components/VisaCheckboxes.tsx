@@ -3,6 +3,12 @@ import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 
+const BlueCheckbox = styled(Checkbox)`
+  &.Mui-checked {
+    color: var(--checkbox-blue) !important;
+  }
+`;
+
 const CheckboxContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -10,14 +16,23 @@ const CheckboxContainer = styled.div`
   margin: 1rem 0;
 `;
 
+const ErrorText = styled.div`
+  color: #d32f2f;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+`;
+
 interface VisaCheckboxesProps {
   formData: LeadFormData;
   onUpdate: (updates: Partial<LeadFormData>) => void;
+  error?: boolean;
 }
 
 const VisaCheckboxes: React.FC<VisaCheckboxesProps> = ({
   formData,
   onUpdate,
+  error = false,
 }) => {
   const handleCheckboxChange =
     (property: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +90,12 @@ const VisaCheckboxes: React.FC<VisaCheckboxesProps> = ({
     { key: "dontKnowVisa", label: "I don't know" },
   ];
 
+  const hasVisa =
+    formData.o1Visa ||
+    formData.eb1aVisa ||
+    formData.eb2NiwVisa ||
+    formData.dontKnowVisa;
+
   return (
     <CheckboxContainer>
       <FormGroup>
@@ -82,16 +103,18 @@ const VisaCheckboxes: React.FC<VisaCheckboxesProps> = ({
           <FormControlLabel
             key={option.key}
             control={
-              <Checkbox
+              <BlueCheckbox
                 checked={Boolean(formData[option.key as keyof LeadFormData])}
                 onChange={handleCheckboxChange(option.key)}
-                color="primary"
               />
             }
             label={option.label}
           />
         ))}
       </FormGroup>
+      {error && !hasVisa && (
+        <ErrorText>Please select at least one visa category</ErrorText>
+      )}
     </CheckboxContainer>
   );
 };

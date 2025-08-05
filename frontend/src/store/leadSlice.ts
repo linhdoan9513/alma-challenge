@@ -21,20 +21,23 @@ interface LeadState {
   error: string | null;
 }
 
+// First, extract the default form data to a constant
+const defaultFormData: LeadFormData = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  linkedin: "",
+  country: "",
+  o1Visa: false,
+  eb1aVisa: false,
+  eb2NiwVisa: false,
+  dontKnowVisa: false,
+  resume: "",
+  openInput: "",
+};
+
 const initialState: LeadState = {
-  formData: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    linkedin: "",
-    country: "",
-    o1Visa: false,
-    eb1aVisa: false,
-    eb2NiwVisa: false,
-    dontKnowVisa: false,
-    resume: "",
-    openInput: "",
-  },
+  formData: defaultFormData,
   isSubmitting: false,
   isSubmitted: false,
   error: null,
@@ -45,14 +48,15 @@ const leadSlice = createSlice({
   initialState,
   reducers: {
     updateFormData: (state, action: PayloadAction<Partial<LeadFormData>>) => {
-      const current = state.formData;
       const incoming = action.payload;
 
       let changed = false;
+      const currentData = state.formData;
+      // Check for changes in incoming fields only
       for (const key in incoming) {
         if (
           incoming[key as keyof LeadFormData] !==
-          current[key as keyof LeadFormData]
+          currentData[key as keyof LeadFormData]
         ) {
           changed = true;
           break;
@@ -61,7 +65,7 @@ const leadSlice = createSlice({
 
       if (changed) {
         state.formData = {
-          ...state.formData,
+          ...currentData,
           ...incoming,
         };
       }

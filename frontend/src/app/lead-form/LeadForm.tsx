@@ -1,23 +1,16 @@
 "use client";
 
-import { ApiError, submitLeadForm } from "@/lib/api";
+import { submitLeadForm } from "@/lib/api";
 import {
   LeadFormData,
   resetForm,
-  setError,
   setSubmitted,
   setSubmitting,
   updateFormData,
 } from "@/store/leadSlice";
 import { RootState } from "@/store/store";
-import {
-  JsonFormsCellRendererRegistryEntry,
-  JsonFormsRendererRegistryEntry,
-} from "@jsonforms/core";
-import {
-  materialCells,
-  materialRenderers,
-} from "@jsonforms/material-renderers";
+import { JsonFormsRendererRegistryEntry } from "@jsonforms/core";
+import { materialRenderers } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import {
   Casino as CasinoIcon,
@@ -31,27 +24,10 @@ import styled from "styled-components";
 import CountrySelect from "../../components/CountrySelect";
 import CustomResumeUpload from "../../components/CustomResumeUpload";
 import {
-  leadFormUISchema1,
-  leadFormUISchema3,
   personalInfoSchema,
   textareaSchema,
 } from "../../components/LeadFormConfig";
 import VisaCheckboxes from "../../components/VisaCheckboxes";
-
-// Client-only wrapper to prevent hydration mismatches
-const ClientOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div style={{ minHeight: "400px" }} />; // Placeholder to prevent layout shift
-  }
-
-  return <>{children}</>;
-};
 
 /* Layout */
 const Page = styled.div`
@@ -61,7 +37,7 @@ const Page = styled.div`
 `;
 
 const Header = styled.header`
-  background: #d9dea6;
+  background: var(--header-bg);
   display: flex;
   align-items: center;
   min-height: 150px;
@@ -102,7 +78,7 @@ const HeaderContent = styled.div`
 const Brand = styled.div`
   font-size: 1.25rem;
   font-weight: 600;
-  color: black;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 
   @media (min-width: 768px) {
@@ -135,7 +111,7 @@ const CircularShapes = styled.img`
 const Heading = styled.h1`
   font-size: 1.5rem;
   font-weight: 700;
-  color: black;
+  color: var(--text-primary);
   text-align: left;
   margin: 0;
   line-height: 1.2;
@@ -150,7 +126,7 @@ const Heading = styled.h1`
 `;
 
 const Section = styled.section`
-  background: white;
+  background: var(--background);
   flex: 1;
   padding: 1.5rem 0.5rem;
   width: 100%;
@@ -176,7 +152,6 @@ const Container = styled.div`
   }
 `;
 
-/* Form Elements */
 const FormHeader = styled.div`
   display: flex;
   flex-direction: column;
@@ -195,13 +170,13 @@ const Icon = styled.div`
   justify-content: center;
   box-shadow: 0 4px 12px rgba(230, 230, 250, 0.3);
   font-size: 1.5rem;
-  color: #6a5acd;
+  color: var(--icon-color);
 `;
 
 const Title = styled.h2`
   font-size: 1.1rem;
   font-weight: 600;
-  color: black;
+  color: var(--text-primary);
   margin: 0;
   text-align: center;
 
@@ -211,7 +186,7 @@ const Title = styled.h2`
 `;
 
 const Description = styled.p`
-  color: black;
+  color: var(--text-primary);
   margin-bottom: 2.5rem;
   line-height: 1.6;
   font-size: 1rem;
@@ -227,45 +202,11 @@ const StyledJsonForms = styled.div`
   max-width: 500px;
   margin: 0 auto;
 
-  /* Form field styling - consistent width and responsive */
-  .MuiTextField-root {
-    margin-bottom: 1.5rem;
-    width: 100%;
-  }
-
+  .MuiTextField-root,
   .MuiFormControl-root {
     margin-bottom: 1.5rem;
-    width: 100%;
-  }
-
-  .MuiInputBase-root {
-    border-radius: 8px;
-    background-color: white;
-    width: 100%;
-  }
-
-  /* Remove clear button (x) from input fields */
-  .MuiInputAdornment-root .MuiIconButton-root {
-    display: none !important;
-  }
-
-  /* Hide any clear/close icons in input fields */
-  .MuiInputBase-input::-webkit-search-cancel-button,
-  .MuiInputBase-input::-webkit-search-decoration,
-  .MuiInputBase-input::-webkit-search-results-button,
-  .MuiInputBase-input::-webkit-search-results-decoration {
-    display: none !important;
-  }
-
-  /* Remove any clear buttons from JsonForms inputs */
-  .MuiTextField-root .MuiInputAdornment-root .MuiIconButton-root,
-  .MuiFormControl-root .MuiInputAdornment-root .MuiIconButton-root {
-    display: none !important;
-  }
-
-  /* Hide clear icons in select dropdowns */
-  .MuiSelect-icon {
-    display: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
   }
 
   /* Remove any close/clear buttons from form controls */
@@ -276,120 +217,15 @@ const StyledJsonForms = styled.div`
     display: none !important;
   }
 
-  /* Hide checkbox labels when checked */
-  .MuiCheckbox-root.Mui-checked ~ .MuiFormControlLabel-label {
-    pointer-events: none !important;
-    color: black;
-  }
-
-  .MuiOutlinedInput-root {
-    width: 100%;
-    transition: border-color 0.2s ease;
-
-    &:hover {
-      border-color: var(--primary-color);
-    }
-
-    &.Mui-focused {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.1);
-    }
-
-    /* Remove all error styling */
-    &.Mui-error {
-      border-color: #e0e0e0;
-    }
-  }
-
-  .MuiFormLabel-root {
-    color: #666;
-    font-weight: 500;
-    font-size: 0.9rem;
-
-    &.Mui-focused {
-      color: black;
-    }
-  }
-
-  /* Hide all validation error messages */
-  .MuiFormHelperText-root {
-    display: none !important;
-  }
-
-  /* Visa checkboxes - responsive layout */
-  .MuiFormGroup-root {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    margin-left: 0 !important;
-    margin-bottom: 1.5rem;
-    width: 100%;
-  }
-
-  .MuiFormControlLabel-root {
-    justify-content: flex-start !important;
-    width: 100% !important;
-    margin: 0.5rem 0 !important;
-  }
-
-  .MuiFormControlLabel-label {
-    font-weight: 500;
-    color: black;
-    font-size: 1rem;
-  }
-
-  .MuiCheckbox-root {
-    padding: 4px;
-    margin: 0;
-    color: #666;
-    transition: color 0.2s ease;
-
-    &.Mui-checked {
-      color: black;
-    }
-  }
-
-  /* Textarea styling - consistent width */
   textarea.MuiInputBase-input {
     min-height: 120px;
     padding: 1rem;
     font-size: 1rem;
     border-radius: 8px;
-    border: none;
-    background-color: white;
+    background-color: var(--background);
     color: var(--primary-color);
     resize: vertical;
     line-height: 1.5;
-    width: 100%;
-    transition: border-color 0.2s ease;
-
-    &:focus {
-      border: none;
-      outline: none;
-      box-shadow: none;
-    }
-
-    &::placeholder {
-      color: #999;
-      font-style: italic;
-    }
-  }
-
-  /* Select dropdown styling - consistent width */
-  .MuiSelect-root {
-    border-radius: 8px;
-    width: 100%;
-  }
-
-  /* Better label styling */
-  .MuiInputLabel-root {
-    font-weight: 500;
-    color: var(--primary-color);
-  }
-
-  /* Consistent spacing for all form elements */
-  .MuiFormControl-root,
-  .MuiTextField-root {
-    margin-bottom: 1.5rem;
   }
 
   /* Responsive design */
@@ -429,13 +265,6 @@ const StyledJsonForms = styled.div`
       padding: 0.5rem;
     }
   }
-
-  /* Global overrides to ensure no red colors */
-  * {
-    --mui-palette-error-main: #e0e0e0 !important;
-    --mui-palette-error-light: #e0e0e0 !important;
-    --mui-palette-error-dark: #e0e0e0 !important;
-  }
 `;
 
 const Button = styled.button`
@@ -443,8 +272,8 @@ const Button = styled.button`
   max-width: 500px;
   padding: 1rem 2rem;
   margin-top: 2rem;
-  background: black;
-  color: white;
+  background: var(--text-primary);
+  color: var(--background);
   font-weight: 600;
   font-size: 1.1rem;
   border: none;
@@ -453,7 +282,7 @@ const Button = styled.button`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    background: #555;
+    background: var(--grey-600);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
@@ -464,7 +293,7 @@ const Button = styled.button`
   }
 
   &:disabled {
-    background: #ccc;
+    background: var(--grey-400);
     cursor: not-allowed;
     transform: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -472,9 +301,9 @@ const Button = styled.button`
 `;
 
 const Error = styled.div`
-  background: #f8f9fa;
+  background: var(--grey-100);
   color: var(--primary-color);
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--grey-300);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -482,7 +311,7 @@ const Error = styled.div`
 
 const Success = styled.div`
   text-align: center;
-  background: white;
+  background: var(--background);
   padding: 3rem 2rem;
   margin: 2rem 0;
   color: var(--primary-color);
@@ -497,24 +326,28 @@ const Success = styled.div`
 const DocumentIcon = styled.div`
   width: 64px;
   height: 64px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--secondary-dark) 100%
+  );
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--background);
   position: relative;
 `;
 
 const ThankYouTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: black;
+  color: var(--text-primary);
   margin: 0;
 `;
 
 const ThankYouMessage = styled.p`
-  color: black;
+  color: var(--text-primary);
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
@@ -523,17 +356,24 @@ const ThankYouMessage = styled.p`
 `;
 
 const HomeButton = styled(Link)`
-  background: black;
-  color: white;
+  background: var(--text-primary);
+  color: var(--background);
   padding: 1rem 2rem;
   border-radius: 8px;
-  text-decoration: none;
   font-weight: 600;
   transition: background-color 0.2s;
   min-width: 400px;
+  text-decoration: none;
 
   &:hover {
-    background: #555;
+    background: var(--grey-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -545,27 +385,139 @@ interface JsonFormsChangeEvent {
 const LeadForm: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { formData, isSubmitting, isSubmitted, error } = useSelector(
+  const { formData, isSubmitting, isSubmitted } = useSelector(
     (state: RootState) => state.lead
   );
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
 
-  // Reset form state when component mounts or when user navigates to this page
+  // Dynamic UI schemas that show errors only when needed
+  const personalInfoUISchema = {
+    type: "VerticalLayout" as const,
+    elements: [
+      {
+        type: "Control" as const,
+        scope: "#/properties/firstName",
+        options: {
+          trim: true,
+          showUnfocusedDescription: false,
+          showErrors: showValidationErrors,
+        },
+      },
+      {
+        type: "Control" as const,
+        scope: "#/properties/lastName",
+        options: {
+          trim: true,
+          showUnfocusedDescription: false,
+          showErrors: showValidationErrors,
+        },
+      },
+      {
+        type: "Control" as const,
+        scope: "#/properties/email",
+        options: {
+          trim: true,
+          showUnfocusedDescription: false,
+          showErrors: showValidationErrors,
+        },
+      },
+      {
+        type: "Control" as const,
+        scope: "#/properties/linkedin",
+        options: {
+          trim: true,
+          showUnfocusedDescription: false,
+          showErrors: showValidationErrors,
+        },
+      },
+    ],
+  };
+
+  const textareaUISchema = {
+    type: "VerticalLayout" as const,
+    elements: [
+      {
+        type: "Control" as const,
+        scope: "#/properties/openInput",
+        options: {
+          multi: true,
+          showUnfocusedDescription: false,
+          showErrors: showValidationErrors,
+        },
+      },
+    ],
+  };
+
   useEffect(() => {
     dispatch(resetForm());
     setResumeFile(null);
+    setShowValidationErrors(false);
   }, [dispatch, router]);
 
   const handleChange = useCallback(
     (event: JsonFormsChangeEvent) => {
-      dispatch(updateFormData(event.data));
+      const incomingData = event.data;
+
+      const hasPersonalInfo =
+        "firstName" in incomingData ||
+        "lastName" in incomingData ||
+        "email" in incomingData ||
+        "linkedin" in incomingData;
+
+      const hasTextarea = "openInput" in incomingData;
+
+      let updateData = { ...incomingData };
+
+      if (hasPersonalInfo) {
+        const personalFields = ["firstName", "lastName", "email", "linkedin"];
+        personalFields.forEach(field => {
+          if (!(field in incomingData)) {
+            (updateData as any)[field] = "";
+          }
+        });
+      }
+
+      if (hasTextarea && !("openInput" in incomingData)) {
+        updateData.openInput = "";
+      }
+
+      // Hide validation errors when user starts making changes
+      if (showValidationErrors) {
+        setShowValidationErrors(false);
+      }
+
+      dispatch(updateFormData(updateData));
     },
-    [dispatch]
+    [dispatch, showValidationErrors]
   );
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      // Check for missing required fields
+      const missingFields: string[] = [];
+
+      if (!formData.firstName?.trim()) {
+        missingFields.push("First Name");
+      }
+
+      if (!formData.lastName?.trim()) {
+        missingFields.push("Last Name");
+      }
+
+      if (!formData.email?.trim()) {
+        missingFields.push("Email");
+      }
+
+      if (!formData.linkedin?.trim()) {
+        missingFields.push("LinkedIn / Personal Website URL");
+      }
+
+      if (!formData.country?.trim()) {
+        missingFields.push("Country of Citizenship");
+      }
 
       const hasVisa =
         formData.o1Visa ||
@@ -573,50 +525,42 @@ const LeadForm: React.FC = () => {
         formData.eb2NiwVisa ||
         formData.dontKnowVisa;
 
-      if (
-        !formData.firstName ||
-        !formData.lastName ||
-        !formData.email ||
-        !formData.linkedin ||
-        !formData.country ||
-        !hasVisa
-      ) {
-        dispatch(
-          setError(
-            "Please fill in all required fields and select at least one visa category."
-          )
-        );
+      if (!hasVisa) {
+        missingFields.push("Visa Category (at least one must be selected)");
+      }
+
+      if (missingFields.length > 0) {
+        setShowValidationErrors(true);
         return;
       }
 
-      // Validate LinkedIn URL format
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        setShowValidationErrors(true);
+        return;
+      }
+
+      // Validate LinkedIn URL
       const linkedinUrl = formData.linkedin.trim();
       const urlPattern = /^https?:\/\/.+/;
 
       if (!urlPattern.test(linkedinUrl)) {
-        dispatch(
-          setError(
-            "Please provide a valid LinkedIn or website URL starting with http:// or https://"
-          )
-        );
+        setShowValidationErrors(true);
         return;
       }
 
       try {
         new URL(linkedinUrl);
       } catch {
-        dispatch(setError("Please provide a valid LinkedIn or website URL"));
+        setShowValidationErrors(true);
         return;
       }
 
       dispatch(setSubmitting(true));
-      dispatch(setError(null));
 
       try {
-        // Create FormData for file upload
         const formDataToSend = new FormData();
-
-        // Add all form fields
         Object.keys(formData).forEach(key => {
           formDataToSend.append(
             key,
@@ -624,31 +568,15 @@ const LeadForm: React.FC = () => {
           );
         });
 
-        // Add resume file if exists
         if (resumeFile) {
           formDataToSend.append("resume", resumeFile);
         }
-        const response = await submitLeadForm(formDataToSend);
+
+        await submitLeadForm(formDataToSend);
         dispatch(setSubmitted(true));
       } catch (err) {
-        if (err instanceof ApiError) {
-          // Handle specific API errors with user-friendly messages
-          if (
-            err.message.includes("LinkedIn") ||
-            err.message.includes("website URL")
-          ) {
-            dispatch(
-              setError(
-                "Please provide a valid LinkedIn or website URL starting with http:// or https://"
-              )
-            );
-          } else {
-            dispatch(setError(err.message));
-          }
-        } else {
-          dispatch(setError("Submission failed. Please try again."));
-        }
         console.error("Form submission error:", err);
+        // For now, just log the error without showing text messages
       } finally {
         dispatch(setSubmitting(false));
       }
@@ -657,7 +585,7 @@ const LeadForm: React.FC = () => {
   );
 
   return (
-    <ClientOnly>
+    <>
       {isSubmitted ? (
         <Page>
           <Header>
@@ -680,7 +608,7 @@ const LeadForm: React.FC = () => {
                 <ThankYouTitle>Thank You</ThankYouTitle>
                 <ThankYouMessage>
                   Your information was submitted to our team of immigration
-                  attorneys. Expect an email from{" "}
+                  attorneys. Expect an email from
                   <strong>hello@tryalma.ai</strong>.
                 </ThankYouMessage>
                 <HomeButton href="/">Go Back to Homepage</HomeButton>
@@ -704,8 +632,6 @@ const LeadForm: React.FC = () => {
 
           <Section>
             <Container>
-              {error && <Error>{error}</Error>}
-
               <form onSubmit={handleSubmit}>
                 <FormHeader>
                   <Icon>
@@ -723,94 +649,86 @@ const LeadForm: React.FC = () => {
                 <StyledJsonForms>
                   <JsonForms
                     schema={personalInfoSchema}
-                    uischema={leadFormUISchema1}
+                    uischema={personalInfoUISchema}
                     data={formData}
                     renderers={
                       materialRenderers as JsonFormsRendererRegistryEntry[]
                     }
-                    cells={
-                      materialCells as JsonFormsCellRendererRegistryEntry[]
-                    }
                     onChange={handleChange}
-                    validationMode="ValidateAndHide"
+                    validationMode={
+                      showValidationErrors
+                        ? "ValidateAndShow"
+                        : "ValidateAndHide"
+                    }
                   />
-                </StyledJsonForms>
-                <div
-                  style={{
-                    marginBottom: "1.5rem",
-                    width: "100%",
-                    maxWidth: "500px",
-                    margin: "0 auto 1.5rem auto",
-                  }}
-                >
                   <CountrySelect
                     value={formData.country}
                     onChange={value => {
+                      if (showValidationErrors) {
+                        setShowValidationErrors(false);
+                      }
                       dispatch(updateFormData({ country: value }));
                     }}
                     label="Country of Citizenship"
                     required={true}
-                    error={false}
+                    error={showValidationErrors && !formData.country?.trim()}
                     disabled={false}
                   />
-                </div>
-                <FormHeader>
-                  <Icon>
-                    <CasinoIcon />
-                  </Icon>
-                  <Title>Visa categories of interest?</Title>
-                </FormHeader>
-                <div
-                  style={{
-                    marginBottom: "1.5rem",
-                    width: "100%",
-                    maxWidth: "500px",
-                    margin: "0 auto 1.5rem auto",
-                  }}
-                >
+                  <FormHeader>
+                    <Icon>
+                      <CasinoIcon />
+                    </Icon>
+                    <Title>Visa categories of interest?</Title>
+                  </FormHeader>
                   <VisaCheckboxes
                     formData={formData}
                     onUpdate={updates => {
+                      if (showValidationErrors) {
+                        setShowValidationErrors(false);
+                      }
                       dispatch(updateFormData(updates));
                     }}
+                    error={showValidationErrors}
                   />
-                </div>
-                <FormHeader>
-                  <Icon>💬</Icon>
-                  <Title>How can we help you ?</Title>
-                </FormHeader>
+                  <FormHeader>
+                    <Icon>💬</Icon>
+                    <Title>How can we help you ?</Title>
+                  </FormHeader>
 
-                <StyledJsonForms>
                   <JsonForms
                     schema={textareaSchema}
-                    uischema={leadFormUISchema3}
+                    uischema={textareaUISchema}
                     data={formData}
                     renderers={
                       materialRenderers as JsonFormsRendererRegistryEntry[]
                     }
-                    cells={
-                      materialCells as JsonFormsCellRendererRegistryEntry[]
-                    }
                     onChange={handleChange}
-                    validationMode="ValidateAndHide"
+                    validationMode={
+                      showValidationErrors
+                        ? "ValidateAndShow"
+                        : "ValidateAndHide"
+                    }
                   />
+                  <CustomResumeUpload
+                    value={formData.resume}
+                    onChange={(value: string, file?: File) => {
+                      if (showValidationErrors) {
+                        setShowValidationErrors(false);
+                      }
+                      dispatch(updateFormData({ resume: value }));
+                      setResumeFile(file || null);
+                    }}
+                  />
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : "Submit"}
+                  </Button>
                 </StyledJsonForms>
-                <CustomResumeUpload
-                  value={formData.resume}
-                  onChange={(value: string, file?: File) => {
-                    dispatch(updateFormData({ resume: value }));
-                    setResumeFile(file || null);
-                  }}
-                />
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit"}
-                </Button>
               </form>
             </Container>
           </Section>
         </Page>
       )}
-    </ClientOnly>
+    </>
   );
 };
 
