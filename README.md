@@ -124,8 +124,8 @@ frontend/
 │   ├── store/           # Redux store
 │   │   ├── leadSlice.ts # Lead state management
 │   │   └── store.ts     # Store configuration
-│   └── styles/          # Global styles
-│       └── GlobalStyles.ts # Styled components
+│   └── styles/          # Styled components types
+│       └── styled.d.ts  # Styled components types
 └── package.json
 ```
 

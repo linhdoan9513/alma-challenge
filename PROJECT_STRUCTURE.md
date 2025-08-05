@@ -69,8 +69,6 @@ frontend/
 │   │   ├── CustomResumeUpload.tsx # Resume upload component
 │   │   ├── FileUploadRenderer.tsx # JsonForms file upload renderer
 │   │   ├── SessionProvider.tsx # Session management
-│   │   ├── ClientWrapper.tsx   # Client-side wrapper
-│   │   └── ThemeProvider.tsx   # Theme provider
 │   ├── lib/
 │   │   ├── api.ts              # API client functions
 │   │   └── countries.ts        # Countries data and utilities
@@ -78,7 +76,6 @@ frontend/
 │   │   ├── leadSlice.ts        # Redux slice for leads
 │   │   └── store.ts            # Redux store configuration
 │   ├── styles/
-│   │   ├── GlobalStyles.ts     # Global styled components
 │   │   └── styled.d.ts         # Styled components types
 │   └── types/
 │       └── jest.d.ts           # Jest type definitions

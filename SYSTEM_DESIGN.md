@@ -313,8 +313,8 @@ App (layout.tsx)
 │   ├── CustomResumeUpload
 │   ├── FileUploadRenderer
 │   ├── SessionProvider
-│   ├── ClientWrapper
-│   └── ThemeProvider
+
+
 ├── Store (Redux)
 │   ├── leadSlice
 │   └── store
@@ -322,7 +322,6 @@ App (layout.tsx)
 │   ├── api
 │   └── countries
 └── Styles
-    ├── GlobalStyles
     └── styled.d.ts
 ```
 
@@ -455,7 +454,7 @@ The project uses styled-components for component-level styling without a formal 
 
 - **Component-scoped styling**: Each component defines its own styles
 - **Hardcoded design values**: Colors, spacing, and other design tokens are defined inline
-- **Global styles**: CSS reset and Material-UI overrides in GlobalStyles.ts
+- **Global styles**: CSS reset and Material-UI overrides in globals.css
 - **No theme provider**: No centralized theme configuration or design tokens - Currently, this has not been implemented, but this should be considered as an enhancement for styling consistency
 - **Material-UI integration**: Leverages Material-UI components for consistent form styling and validation
 - **JsonForms framework**: Uses JsonForms for data-driven form generation with built-in validation and styling consistency

@@ -1,11 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from "@/test-utils";
 import FileUploadRenderer from "../FileUploadRenderer";
 
-// Mock the JsonForms wrapper
+// Mock the JsonForms wrapper to return the component directly
 jest.mock("@jsonforms/react", () => ({
-  withJsonFormsControlProps: (
-    Component: React.ComponentType<Record<string, unknown>>
-  ) => Component,
+  withJsonFormsControlProps: (Component: React.ComponentType<any>) => Component,
 }));
 
 // Mock FileReader
@@ -47,7 +45,7 @@ describe("FileUploadRenderer", () => {
     description: "Upload your resume or CV",
     errors: null,
     required: false,
-  };
+  } as any;
 
   beforeEach(() => {
     jest.clearAllMocks();

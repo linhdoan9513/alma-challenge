@@ -16,13 +16,11 @@ export const leadFormSchema: JsonSchema = {
     email: {
       type: "string",
       title: "Email",
-      format: "email",
       minLength: 1,
     },
     linkedin: {
       type: "string",
       title: "LinkedIn / Personal Website URL",
-      format: "uri",
       minLength: 1,
     },
     country: {
@@ -52,7 +50,6 @@ export const leadFormSchema: JsonSchema = {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       maxLength: 1000,
-      format: "textarea",
     },
   },
   required: ["firstName", "lastName", "email", "linkedin", "country"],
@@ -75,13 +72,11 @@ export const personalInfoSchema: JsonSchema = {
     email: {
       type: "string",
       title: "Email",
-      format: "email",
       minLength: 1,
     },
     linkedin: {
       type: "string",
       title: "LinkedIn / Personal Website URL",
-      format: "uri",
       minLength: 1,
     },
   },
@@ -121,7 +116,6 @@ export const textareaSchema: JsonSchema = {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       maxLength: 1000,
-      format: "textarea",
     },
   },
 };
