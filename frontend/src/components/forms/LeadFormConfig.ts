@@ -1,57 +1,5 @@
 import { JsonSchema, UISchemaElement } from "@jsonforms/core";
-
-export const leadFormSchema: JsonSchema = {
-  type: "object",
-  properties: {
-    firstName: {
-      type: "string",
-      title: "First Name",
-      minLength: 1,
-    },
-    lastName: {
-      type: "string",
-      title: "Last Name",
-      minLength: 1,
-    },
-    email: {
-      type: "string",
-      title: "Email",
-      minLength: 1,
-    },
-    linkedin: {
-      type: "string",
-      title: "LinkedIn / Personal Website URL",
-      minLength: 1,
-    },
-    country: {
-      type: "string",
-      title: "Country of Citizenship",
-    },
-    o1Visa: {
-      type: "boolean",
-      title: "O-1",
-    },
-    eb1aVisa: {
-      type: "boolean",
-      title: "EB-1A",
-    },
-    eb2NiwVisa: {
-      type: "boolean",
-      title: "EB-2 NIW",
-    },
-    dontKnowVisa: {
-      type: "boolean",
-      title: "I don't know",
-    },
-
-    openInput: {
-      type: "string",
-      title: "How can we help you?",
-      maxLength: 1000,
-    },
-  },
-  required: ["firstName", "lastName", "email", "linkedin", "country"],
-};
+import { countries } from "../../lib/countries";
 
 // Separate schema for Personal Information
 export const personalInfoSchema: JsonSchema = {
@@ -82,31 +30,14 @@ export const personalInfoSchema: JsonSchema = {
       minLength: 1,
       errorMessage: "LinkedIn / Personal Website URL is required",
     },
-  },
-  required: ["firstName", "lastName", "email", "linkedin"],
-};
-
-// Separate schema for Visa Categories
-export const visaSchema: JsonSchema = {
-  type: "object",
-  properties: {
-    o1Visa: {
-      type: "boolean",
-      title: "O-1",
-    },
-    eb1aVisa: {
-      type: "boolean",
-      title: "EB-1A",
-    },
-    eb2NiwVisa: {
-      type: "boolean",
-      title: "EB-2 NIW",
-    },
-    dontKnowVisa: {
-      type: "boolean",
-      title: "I don't know",
+    country: {
+      type: "string",
+      title: "Country of Citizenship",
+      errorMessage: "Country is required",
+      enum: countries.map(country => country.name),
     },
   },
+  required: ["firstName", "lastName", "email", "linkedin", "country"],
 };
 
 // Separate schema for Textarea
@@ -121,8 +52,10 @@ export const textareaSchema: JsonSchema = {
   },
 };
 
-// Keep the original UI schema for backward compatibility
-export const leadFormUISchema: UISchemaElement = {
+// UI Schemas
+export const createPersonalInfoUISchema = (
+  showValidationErrors: boolean
+): UISchemaElement => ({
   type: "VerticalLayout",
   elements: [
     {
@@ -131,7 +64,7 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         trim: true,
         showUnfocusedDescription: false,
-        showErrors: false,
+        showErrors: showValidationErrors,
       },
     },
     {
@@ -140,7 +73,7 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         trim: true,
         showUnfocusedDescription: false,
-        showErrors: false,
+        showErrors: showValidationErrors,
       },
     },
     {
@@ -149,7 +82,7 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         trim: true,
         showUnfocusedDescription: false,
-        showErrors: false,
+        showErrors: showValidationErrors,
       },
     },
     {
@@ -158,7 +91,7 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         trim: true,
         showUnfocusedDescription: false,
-        showErrors: false,
+        showErrors: showValidationErrors,
       },
     },
     {
@@ -167,39 +100,25 @@ export const leadFormUISchema: UISchemaElement = {
       options: {
         trim: true,
         showUnfocusedDescription: false,
-        showErrors: false,
-      },
-    },
-    {
-      type: "Label",
-      text: "Visa categories of interest?",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/o1Visa",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/eb1aVisa",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/eb2NiwVisa",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/dontKnowVisa",
-    },
-
-    {
-      type: "Control",
-      scope: "#/properties/openInput",
-      // label: "How can we help you?",
-      options: {
-        multi: true, // for textarea
-        showUnfocusedDescription: false,
-        showErrors: false,
+        showErrors: showValidationErrors,
       },
     },
   ],
-};
+});
+
+export const createTextareaUISchema = (
+  showValidationErrors: boolean
+): UISchemaElement => ({
+  type: "VerticalLayout",
+  elements: [
+    {
+      type: "Control",
+      scope: "#/properties/openInput",
+      options: {
+        multi: true,
+        showUnfocusedDescription: false,
+        showErrors: showValidationErrors,
+      },
+    },
+  ],
+});

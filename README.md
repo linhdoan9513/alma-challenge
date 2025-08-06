@@ -114,10 +114,8 @@ frontend/
 │   │   └── page.tsx     # Home page
 │   ├── components/      # Reusable React components
 │   │   ├── LeadForm.tsx # Main lead form component
-│   │   ├── CountrySelect.tsx # Country selection
 │   │   ├── VisaCheckboxes.tsx # Visa type selection
 │   │   ├── CustomResumeUpload.tsx # Resume upload
-│   │   └── FileUploadRenderer.tsx # File upload renderer
 │   ├── lib/             # Utilities and API client
 │   │   ├── api.ts       # API client functions
 │   │   └── countries.ts # Countries data

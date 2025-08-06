@@ -43,9 +43,7 @@ Tests are organized in the following structure:
 src/
 ├── components/
 │   ├── __tests__/
-│   │   ├── CountrySelect.test.tsx
 │   │   ├── VisaCheckboxes.test.tsx
-│   │   ├── FileUploadRenderer.test.tsx
 │   │   └── LeadForm.test.tsx
 │   └── ...
 ├── lib/
@@ -180,7 +178,7 @@ npm test -- --verbose
 To debug a specific test file:
 
 ```bash
-npm test -- CountrySelect.test.tsx
+npm test -- LeadForm.test.tsx
 ```
 
 ### Debug with Console

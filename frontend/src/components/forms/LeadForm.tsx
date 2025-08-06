@@ -1,14 +1,5 @@
 "use client";
 
-import { submitLeadForm } from "../../lib/api";
-import {
-  LeadFormData,
-  resetForm,
-  setSubmitted,
-  setSubmitting,
-  updateFormData,
-} from "../../store/leadSlice";
-import { RootState } from "../../store/store";
 import { JsonFormsRendererRegistryEntry } from "@jsonforms/core";
 import { materialRenderers } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
@@ -21,13 +12,24 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import CountrySelect from "./CountrySelect";
-import CustomResumeUpload from "./CustomResumeUpload";
-import VisaCheckboxes from "./VisaCheckboxes";
+import { submitLeadForm } from "../../lib/api";
 import {
+  LeadFormData,
+  resetForm,
+  setSubmitted,
+  setSubmitting,
+  updateFormData,
+} from "../../store/leadSlice";
+import { RootState } from "../../store/store";
+
+import CustomResumeUpload from "./CustomResumeUpload";
+import {
+  createPersonalInfoUISchema,
+  createTextareaUISchema,
   personalInfoSchema,
   textareaSchema,
 } from "./LeadFormConfig";
+import VisaCheckboxes from "./VisaCheckboxes";
 
 /* Layout */
 const Page = styled.div`
@@ -209,6 +211,12 @@ const StyledJsonForms = styled.div`
     min-width: 100% !important;
   }
 
+  /* Align checkboxes to the left */
+  .MuiFormControlLabel-root {
+    display: flex;
+    justify-content: flex-start !important;
+  }
+
   /* Remove any close/clear buttons from form controls */
   button[aria-label*="clear"],
   button[aria-label*="Clear"],
@@ -300,15 +308,6 @@ const Button = styled.button`
   }
 `;
 
-const Error = styled.div`
-  background: var(--grey-100);
-  color: var(--primary-color);
-  border: 1px solid var(--grey-300);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-`;
-
 const Success = styled.div`
   text-align: center;
   background: var(--background);
@@ -391,63 +390,9 @@ const LeadForm: React.FC = () => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
 
-  // Dynamic UI schemas that show errors only when needed
-  const personalInfoUISchema = {
-    type: "VerticalLayout" as const,
-    elements: [
-      {
-        type: "Control" as const,
-        scope: "#/properties/firstName",
-        options: {
-          trim: true,
-          showUnfocusedDescription: false,
-          showErrors: showValidationErrors,
-        },
-      },
-      {
-        type: "Control" as const,
-        scope: "#/properties/lastName",
-        options: {
-          trim: true,
-          showUnfocusedDescription: false,
-          showErrors: showValidationErrors,
-        },
-      },
-      {
-        type: "Control" as const,
-        scope: "#/properties/email",
-        options: {
-          trim: true,
-          showUnfocusedDescription: false,
-          showErrors: showValidationErrors,
-        },
-      },
-      {
-        type: "Control" as const,
-        scope: "#/properties/linkedin",
-        options: {
-          trim: true,
-          showUnfocusedDescription: false,
-          showErrors: showValidationErrors,
-        },
-      },
-    ],
-  };
-
-  const textareaUISchema = {
-    type: "VerticalLayout" as const,
-    elements: [
-      {
-        type: "Control" as const,
-        scope: "#/properties/openInput",
-        options: {
-          multi: true,
-          showUnfocusedDescription: false,
-          showErrors: showValidationErrors,
-        },
-      },
-    ],
-  };
+  // Create UI schemas with current validation state
+  const personalInfoUISchema = createPersonalInfoUISchema(showValidationErrors);
+  const textareaUISchema = createTextareaUISchema(showValidationErrors);
 
   useEffect(() => {
     dispatch(resetForm());
@@ -660,19 +605,6 @@ const LeadForm: React.FC = () => {
                         ? "ValidateAndShow"
                         : "ValidateAndHide"
                     }
-                  />
-                  <CountrySelect
-                    value={formData.country}
-                    onChange={value => {
-                      if (showValidationErrors) {
-                        setShowValidationErrors(false);
-                      }
-                      dispatch(updateFormData({ country: value }));
-                    }}
-                    label="Country of Citizenship"
-                    required={true}
-                    error={showValidationErrors && !formData.country?.trim()}
-                    disabled={false}
                   />
                   <FormHeader>
                     <Icon>
